@@ -1,0 +1,7 @@
+
+EXEs created by src.
+
+Add something like this to ~/.bashrc:
+
+export PATH=/home/xiaodongli/software/LSS_Code/bin:${PATH}
+
