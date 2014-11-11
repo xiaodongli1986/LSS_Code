@@ -1,9 +1,9 @@
 
 ! July 1: remove gfmethod sampling...
 
-module ap_chisq
+module LSS_chisq
 
-use ap_grad_fields
+use LSS_grad_fields
 
 implicit none
 
@@ -105,7 +105,7 @@ contains
 			muers(i) = sqrt((muers(i) - muavs(i)**2.0*dble(njkf)) * dble(njkf-1.0)/dble(njkf))
 			ravs(i) = ravs(i) / dble(njkf)
 			rers(i) = sqrt((rers(i) - ravs(i)**2.0*dble(njkf)) * dble(njkf-1.0)/dble(njkf))
-			zavs(i) = de_zfromintpl(dble(ravs(i)))
+			zavs(i) = de_zfromintpl(ravs(i))
 		enddo
 		if(printinfo) then
 			write(*,'(A,<nbin>(e14.7,1x))') '(muaver_jackknife) muavs = ', muavs(1:nbin)
@@ -330,7 +330,7 @@ contains
 					call eqvl_binned_quan(drho_mu_data, r_list, rmin, rmax, size(drho_mu_data), &
 						nownbin, muavlist_test, muerlist_test, ravlist_test, muvarlist_test)
 					do k = 1, nownbin
-						zlist_test(k) = de_zfromintpl(dble(ravlist_test(k)))
+						zlist_test(k) = de_zfromintpl(ravlist_test(k))
 					enddo
 					write(898,'(<nownbin>(e14.7,1x),A)') zlist_test(1:nownbin), ' # redshift'
 					write(898,'(<nownbin>(e14.7,1x),A)') ravlist_test(1:nownbin), ' #  r'
@@ -342,7 +342,7 @@ contains
 					call eqvl_binned_quan(drho_mu_data_orig, r_list, rmin, rmax, size(drho_mu_data), &
 						nownbin, muavlist_test, muerlist_test, ravlist_test, muvarlist_test)
 					do k = 1, nownbin
-						zlist_test(k) = de_zfromintpl(dble(ravlist_test(k)))
+						zlist_test(k) = de_zfromintpl(ravlist_test(k))
 					enddo
 					write(899,'(<nownbin>(e14.7,1x),A)') zlist_test(1:nownbin), ' # redshift'
 					write(899,'(<nownbin>(e14.7,1x),A)') ravlist_test(1:nownbin), ' #  r'
@@ -387,7 +387,7 @@ contains
 					call eqvl_binned_quan(drho_absrho_data, r_list, rmin, rmax, num_points, &
 						nownbin, absrhoavlist_test, absrhoerlist_test, ravlist_test, absrhovarlist_test)
 					do k = 1, nownbin
-						zlist_test(k) = de_zfromintpl(dble(ravlist_test(k)))
+						zlist_test(k) = de_zfromintpl(ravlist_test(k))
 					enddo
 					
 					write(898,'(<nownbin>(e14.7,1x),A)') zlist_test(1:nownbin), ' # redshift'
@@ -519,4 +519,4 @@ contains
 			write(*,'(A)') '   (gf_mldprho_chi2s) Done.'
 		endif
 	end subroutine gf_mldprho_chi2s
-end module ap_chisq
+end module LSS_chisq

@@ -1,12 +1,12 @@
 !############################3333333333333333333333
 !
 ! definitions, functions related with cosmology
-! All functions in this subroutine are in double precision
+! All functions in this subroutine are in real(dl)
 !
 !############################3333333333333333333333
 
-module ap_cosmo_funs
-use ap_tools
+module LSS_cosmo_funs
+use LSS_tools
 implicit none
 
 !!! Fixed settings
@@ -15,11 +15,11 @@ implicit none
 	integer,  parameter	:: de_num_intpl = 2500
 
 	! step size of redshift: used to get r from r(z) through interpolation
-	double precision,  parameter	:: de_basenumber = 1.0_dl + 1.0_dl/512.0_dl
-	double precision,  parameter	:: de_logbasenumber = log(de_basenumber)
+	real(dl),  parameter	:: de_basenumber = 1.0_dl + 1.0_dl/512.0_dl
+	real(dl),  parameter	:: de_logbasenumber = log(de_basenumber)
 
 	! step size of r: used to get redshift from r through interpolation
-	double precision, parameter :: de_minr = 0.0_dl, de_maxr = 6000.0_dl, de_deltar = (de_maxr-de_minr)/dble(de_num_intpl-1)
+	real(dl), parameter :: de_minr = 0.0_dl, de_maxr = 6000.0_dl, de_deltar = (de_maxr-de_minr)/dble(de_num_intpl-1)
 	
 !!! Important variables
 
@@ -27,16 +27,16 @@ implicit none
 	real(dl):: gb_omegam, gb_w, gb_h
 
 	! maximal reshift the interpolation can reach
-	double precision :: de_maxintplz
+	real(dl) :: de_maxintplz
 
 	!Common used array, saving the interpolating data.
 	! Frequently used in many dark energy models, so put them here as common variables.
 	! Array for redshift.
-	double precision :: de_zdata(de_num_intpl)
+	real(dl) :: de_zdata(de_num_intpl)
 	! Array for ez, defined as H(z)/H(0)
-	double precision :: de_comovr_data(de_num_intpl)
-	double precision :: de_getz_data(de_num_intpl)
-	double precision :: de_gfz_data(de_num_intpl)
+	real(dl) :: de_comovr_data(de_num_intpl)
+	real(dl) :: de_getz_data(de_num_intpl)
+	real(dl) :: de_gfz_data(de_num_intpl)
 
 	logical :: cosmo_funs_inited = .false.
 
@@ -79,7 +79,7 @@ contains
   !------------------------------------------
   	subroutine de_calc_comovr()
   		integer :: i, maxi,num_bin, iofz30
-  		double precision :: zleft, gfleft, zright
+  		real(dl) :: zleft, gfleft, zright
 		! comvr(z)
   		de_comovr_data(1) = 0
   		do i = 2, de_num_intpl
@@ -93,7 +93,7 @@ contains
 		enddo
 		! gf(z)
 		!!  for the highest redshift point
-		iofz30 = de_iz(30.0d0)
+		iofz30 = de_iz(30.0_dl)
 		if(iofz30 < de_num_intpl) then
 			maxi = iofz30
 			do i = maxi,de_num_intpl
@@ -118,9 +118,9 @@ contains
   !------------------------------------------
   ! get z from interploation
   !------------------------------------------
-  	double precision function de_zfromintpl(r)
+  	real(dl) function de_zfromintpl(r)
   		integer :: i, i1, i2
-  		double precision :: r
+  		real(dl) :: r
   		i = de_ir(r)
   		call ilist(i,1,1,de_num_intpl,i1,i2)
   		de_zfromintpl = intpl_vl(r, de_ri(i1), de_getz_data(i1), &
@@ -130,9 +130,9 @@ contains
   !------------------------------------------
   ! get comv_r from interploation
   !------------------------------------------
-  	double precision function de_get_comovr(z)
+  	real(dl) function de_get_comovr(z)
   		integer :: i, i1, i2
-  		double precision :: z
+  		real(dl) :: z
   		i = de_iz(z)
   		call ilist(i,1,1,de_num_intpl,i1,i2)
   		de_get_comovr = intpl_vl(z, de_zdata(i1), de_comovr_data(i1), &
@@ -142,9 +142,9 @@ contains
   !------------------------------------------
   ! get comv_r from interploation
   !------------------------------------------
-  	double precision function de_gfz_intpl(z)
+  	real(dl) function de_gfz_intpl(z)
   		integer :: i, i1, i2
-  		double precision :: z
+  		real(dl) :: z
   		i = de_iz(z)
   		call ilist(i,1,1,de_num_intpl,i1,i2)
   		de_gfz_intpl = intpl_vl(z, de_zdata(i1), de_gfz_data(i1), &
@@ -156,7 +156,7 @@ contains
   !------------------------------------------
   ! Get z from index
   !------------------------------------------
-	double precision function de_zi(i)
+	real(dl) function de_zi(i)
 		integer :: i
 		de_zi = de_basenumber**DBLE(i-1) - 1.0_dl
 	end function de_zi
@@ -165,7 +165,7 @@ contains
   ! Get index from z
   !------------------------------------------
 	integer function de_iz(z)
-		double precision :: z
+		real(dl) :: z
 		de_iz = Ceiling(log(1.0_dl+z)/de_logbasenumber + 1.0_dl)
 		if(de_iz < 2) de_iz = 2
 	end function de_iz
@@ -173,7 +173,7 @@ contains
   !------------------------------------------
   ! Get r from index
   !------------------------------------------
-	double precision function de_ri(i)
+	real(dl) function de_ri(i)
 		integer :: i
 		de_ri = de_minr + de_deltar*(i-1)
 	end function de_ri
@@ -182,7 +182,7 @@ contains
   ! Get index from r
   !------------------------------------------
 	integer function de_ir(r)
-		double precision :: r
+		real(dl) :: r
 		de_ir = int((r-de_minr)/de_deltar+0.5)
 		if(de_ir < 2) de_ir = 2
 		if(de_ir > de_num_intpl) de_ir = de_num_intpl - 1
@@ -191,18 +191,18 @@ contains
   !------------------------------------------
   ! Hubble parameter in unit of km/s/Mpc
   !------------------------------------------	
-  	double precision function Hz(z)
-  		double precision :: z
+  	real(dl) function Hz(z)
+  		real(dl) :: z
   		Hz = 100.0*gb_h*&
   		sqrt(gb_omegam*(1.0+z)**3.0 + (1.0-gb_omegam)*(1.0+z)**(3.0*(1.0+gb_w)))
   	end function Hz
-  	double precision function inv_Hz(z)
-  		double precision :: z
+  	real(dl) function inv_Hz(z)
+  		real(dl) :: z
   		inv_Hz = 100.0*gb_h*sqrt(gb_omegam*(1.0+z)**3.0 + (1.0-gb_omegam)*(1.0+z)**(3.0*(1.0+gb_w)))
   		inv_Hz = 1.0 / inv_Hz
   	end function inv_Hz
-  	double precision function inv_Hz1pz(z) ! 1/[H(z)*(1+z)]: function to be integrated by t_age(z)
-  		double precision :: z
+  	real(dl) function inv_Hz1pz(z) ! 1/[H(z)*(1+z)]: function to be integrated by t_age(z)
+  		real(dl) :: z
   		inv_Hz1pz = 100.0*gb_h*sqrt(gb_omegam*(1.0+z)**3.0 + (1.0-gb_omegam)*(1.0+z)**(3.0*(1.0+gb_w)))
   		inv_Hz1pz = 1.0 / (inv_Hz1pz*(1.0+z))
   	end function inv_Hz1pz
@@ -210,11 +210,11 @@ contains
   !------------------------------------------
   ! ratio of omega matter
   !------------------------------------------
-	double precision function omegamz(z)
+	real(dl) function omegamz(z)
 		! Dummy
-		double precision :: z
+		real(dl) :: z
 		! Local
-		double precision :: ezsq
+		real(dl) :: ezsq
 		ezsq = gb_omegam*(1.0+z)**3.0 + (1.0-gb_omegam)*(1.0+z)**(3.0*(1.0+gb_w))
 		omegamz = gb_omegam*(1.0+z)**3.0 / ezsq
 	end function omegamz
@@ -222,11 +222,11 @@ contains
   !------------------------------------------
   ! derivative of growth factor df(z) / dz 
   !------------------------------------------
-	double precision function dgfdz(z, gf)
+	real(dl) function dgfdz(z, gf)
 		! Dummy
-		double precision, intent(in) :: z,gf
+		real(dl), intent(in) :: z,gf
 		! Local
-		double precision ::  Omegamz, dlnHdz, esq
+		real(dl) ::  Omegamz, dlnHdz, esq
 
 		esq     =  gb_omegam*(1.0d0+z)**3.0d0 + (1.0d0-gb_omegam)*(1.0d0+z)**(3.0d0*(1.0d0+gb_w))
 		dlnHdz  =  gb_omegam*(1.0d0+z)**3.0d0 + (1.0d0+gb_w)*(1.0d0-gb_omegam)*(1.0d0+z)**(3.0d0*(1.0d0+gb_w))
@@ -239,29 +239,29 @@ contains
   !------------------------------------------
   ! comoving r in unit of Mpc/h
   !------------------------------------------	
-	double precision function comov_r(z)
-  		double precision :: z
+	real(dl) function comov_r(z)
+  		real(dl) :: z
   		integer :: n
   		n = max(4*ceiling(z / 0.125),4)
-  		comov_r = simpson(inv_Hz,0.0d0,z,n)*const_c*gb_h
+  		comov_r = simpson(inv_Hz,0.0_dl,z,n)*const_c*gb_h
   	end function comov_r
 
   !------------------------------------------
   ! t_age in unit of s * Mpc/km
   !------------------------------------------	
-	double precision function t_age(z)
-  		double precision :: z
+	real(dl) function t_age(z)
+  		real(dl) :: z
   		integer :: n
   		n = max(4*ceiling(z / 0.125),4)
-  		t_age = simpson(inv_Hz1pz,0.0d0,z,n)
+  		t_age = simpson(inv_Hz1pz,0.0_dl,z,n)
   	end function t_age
 
   !------------------------------------------
   !   	 get z according to comoving_r 
   !------------------------------------------	
-	double precision function get_z(gv_comov_r, gv_zl, gv_zr)
-		double precision :: gv_comov_r, zl, zr
-		double precision, optional :: gv_zl, gv_zr
+	real(dl) function get_z(gv_comov_r, gv_zl, gv_zr)
+		real(dl) :: gv_comov_r, zl, zr
+		real(dl), optional :: gv_zl, gv_zr
 		if(present(gv_zl)) then
 			zl = gv_zl
 			else
@@ -274,5 +274,5 @@ contains
 		endif
 		get_z = findroot(comov_r, gv_comov_r, zl, zr)
 	end function get_z
-end module ap_cosmo_funs
+end module LSS_cosmo_funs
 

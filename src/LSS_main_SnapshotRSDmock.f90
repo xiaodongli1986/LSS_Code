@@ -3,7 +3,7 @@
 
 program main
 
-use ap_cosmo_funs
+use LSS_cosmo_funs
 
 implicit none
 
@@ -96,16 +96,16 @@ implicit none
 	if(dovoleff) then
 		gb_omegam = 0.26; gb_w = -1.0; 
 		call de_calc_comovr()
-		dist = comov_r(dble(redshift))
-		voldft = dist**2.0/Hz(dble(redshift))
+		dist = comov_r(redshift)
+		voldft = dist**2.0/Hz(redshift)
 	endif
 
 	call cosmo_funs_init(.true.)
 	gb_omegam = omegam; gb_w = w
 	call de_calc_comovr()
-	dist = comov_r(dble(redshift))
+	dist = comov_r(redshift)
 	if(dovoleff) then
-		volnow = dist**2.0/Hz(dble(redshift))
+		volnow = dist**2.0/Hz(redshift)
 		volscale = volnow / voldft
 		rescalefac = volscale**(1.0d0/3.0d0)
 		write(*,'(4x,A,2e14.7,2f10.5)') &

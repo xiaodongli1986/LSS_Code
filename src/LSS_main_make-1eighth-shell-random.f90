@@ -2,7 +2,7 @@
 program main 
 
 use mpi
-use ap_cosmo_funs
+use LSS_cosmo_funs
 
 	implicit none
 	! HR3 file, data

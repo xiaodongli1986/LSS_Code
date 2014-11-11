@@ -8,7 +8,7 @@
 !####################################
 module functions
 
-use ap_tools
+use LSS_tools
 implicit none
 contains
 
@@ -34,7 +34,7 @@ end module functions
 
 program main
 use functions
-use ap_tools
+use LSS_tools
 implicit none
 
       character(len=char_len) :: datafile, outputinfo

@@ -2,10 +2,10 @@
 ! What treatment we have adopted now:
 
 
-program ap_main_mpi_sh
+program LSS_main_mpi_sh
 
 use mpi
-use ap_tools
+use LSS_tools
 
 	implicit none
 	character(len=char_len) :: cmdfile, printstr, tmpstr1, tmpstr2, cmdstr
@@ -61,4 +61,4 @@ use ap_tools
 	call mpi_barrier(mpi_comm_world,ierr)
 	call mpi_finalize(ierr)
 
-end program ap_main_mpi_sh
+end program LSS_main_mpi_sh

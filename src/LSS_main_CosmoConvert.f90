@@ -1,7 +1,7 @@
 
 program main
 
-use ap_cosmo_funs
+use LSS_cosmo_funs
 
 implicit none
 
@@ -131,7 +131,7 @@ implicit none
 		ymin = min(y,ymin); ymax = max(y,ymax)
 		zmin = min(z,zmin); zmax = max(z,zmax)
 		rmin = min(r,rmin); rmax = max(r,rmax)
-	        redshift = de_zfromintpl(dble(r))
+	        redshift = de_zfromintpl(r)
 		redmin = min(redshift,redmin); redmax = max(redshift,redmax)
 	        randreds(1,nlines) = r
 	        randreds(2,nlines) = redshift
@@ -173,7 +173,7 @@ implicit none
 			weight=tmp(wcol)
 		endif
 		r = randreds(1,i)
-		rat = de_get_comovr(dble(randreds(2,i)))/r
+		rat = de_get_comovr(randreds(2,i))/r
 		if(.not.hasweight) then
 			write(2,'(3(1x,f13.6))')  x*rat, y*rat, z*rat
 		else

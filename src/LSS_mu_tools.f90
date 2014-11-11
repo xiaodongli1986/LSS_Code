@@ -2,8 +2,8 @@
 !####################################
 !This module are tools for mu statistics
 !####################################
-module ap_mu_tools
-use ap_tools
+module LSS_mu_tools
+use LSS_tools
 implicit none
 
 contains
@@ -341,4 +341,4 @@ contains
 	end function chisq_of_mu_data_shift
 
 	
-end module ap_mu_tools
+end module LSS_mu_tools

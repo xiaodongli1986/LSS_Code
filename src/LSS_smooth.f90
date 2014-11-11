@@ -4,8 +4,8 @@
 !####################################
 !This module does smooth
 !####################################
-module ap_smooth
-use ap_cell
+module LSS_smooth
+use LSS_cell
 
 	implicit none
 
@@ -168,7 +168,7 @@ contains
 			selected_list(i) = tmpindex(smlablist(i))
 		enddo
 	end subroutine NNBExactSearch_data
-		
+
 
   !------------------------------------------
   ! estimating rho and gradient rho based on
@@ -781,6 +781,6 @@ contains
 		print *, 'Maxdist: ', maxdist1,maxdist2
 		print *, 'sumwei_acpt, sumwei_all, rat = ', sumwei_acpt, sumwei_all, weirat
 	end subroutine NNBRanWeiTest_sub
-end module ap_smooth	
+end module LSS_smooth	
 	
 

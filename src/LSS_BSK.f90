@@ -1,6 +1,6 @@
 
-module ap_BSK
-use ap_chisq
+module LSS_BSK
+use LSS_chisq
 implicit none
 
 
@@ -156,7 +156,7 @@ contains
 			call readin_dataran(printinfo)
 			call init_cosmo(omegam,w,h_dft,printinfo)
 			call init_mult_lists(printinfo)
-			call do_cell_init((dble(gb_numdata)**0.33), printinfo)		
+			call do_cell_init((real(gb_numdata)**0.33_dl), printinfo)		
 		endif
 
 		! make directory
@@ -257,7 +257,7 @@ contains
 				trim(adjustl(file_BSKinfo))
 			open(unit=2198,file=file_BSKinfo)
 			do i = 1, gb_numBSKConnect
-				write(2198,'(4e15.7)') gb_BSKs(i)%r, de_zfromintpl(dble(gb_BSKs(i)%r)), gb_BSKs(i)%length, gb_BSKs(i)%mu
+				write(2198,'(4e15.7)') gb_BSKs(i)%r, de_zfromintpl(gb_BSKs(i)%r), gb_BSKs(i)%length, gb_BSKs(i)%mu
 			enddo
 			close(2198)
 		endif
@@ -280,7 +280,7 @@ contains
 		! comment it in real calculation
 !			subroutine gd_mldprho_chi2s(cs, changenuminx, chisqlist, dfchisqlist, multdfchisqlist, numchisq)
 		if(do_nglcrosscheck) then
-			print *, '       Now doing similar job using ngl!!! (declare your ngl directory in ap_smooth.f90/BSK)'
+			print *, '       Now doing similar job using ngl!!! (declare your ngl directory in LSS_smooth.f90/BSK)'
 			print *, ' *** Result of ngl wrote to: ', trim(adjustl(file_ngl))
 			cmdstr = 'rm '//trim(adjustl(file_ngl))
 			call system(cmdstr)
@@ -310,7 +310,7 @@ contains
 		cs%print_info = printinfo
 		call init_cosmo(omegam,w,h_dft,printinfo)
 		call init_mult_lists(printinfo)
-		call do_cell_init((dble(gb_numdata)**0.33), printinfo)	
+		call do_cell_init((real(gb_numdata)**0.33_dl), printinfo)	
 
 		! gb_rho/drho lists... 
 		! pos will be position; rho will be length of connection; drho will be dx,dy,dz... Oh my god.
@@ -364,4 +364,4 @@ contains
 		
 	end subroutine BSK_stat
 
-end module ap_BSK
+end module LSS_BSK

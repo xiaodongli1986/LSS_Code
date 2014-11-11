@@ -3,7 +3,7 @@
 
 program main
 
-use ap_chisq
+use LSS_chisq
 
 implicit none
 
@@ -115,7 +115,7 @@ implicit none
 	call init_cosmo(omAP,wAP,h_dft,printinfo)
 	call init_mult_lists(printinfo)
 	if(cs%num_in_x.eq.0) cs%num_in_x = dble(gb_numdata)**0.33
-	call do_cell_init(dble(cs%num_in_x), printinfo)		
+	call do_cell_init(real(cs%num_in_x)+0.0_dl, printinfo)		
 	
 	call grid_rho_drho_list(cs%smnum, printinfo, gb_pos_list, gb_rho_list, gb_drho_list)
 	n = size(gb_rho_list); deallocate(gb_rho_list)

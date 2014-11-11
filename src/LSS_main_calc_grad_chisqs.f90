@@ -41,10 +41,10 @@
 ! June 30: zhengli chisq subroutine;... write code to calc drho chisq/ test; ...
 ! June 11: delete nuisance files like getcor/structure_count/grid;
 
-program ap_main
+program LSS_main
 
 use mpi
-use ap_chisq
+use LSS_chisq
 
 	implicit none
 
@@ -668,4 +668,4 @@ use ap_chisq
      	close(1000)
 	call mpi_barrier(mpi_comm_world,ierr)
 	call mpi_finalize(ierr)
-end program ap_main
+end program LSS_main

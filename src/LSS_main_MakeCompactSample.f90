@@ -1,7 +1,7 @@
 
 program main
 
-use ap_cosmo_funs
+use LSS_cosmo_funs
 
 implicit none
 
@@ -108,10 +108,10 @@ implicit none
 		ymin = min(y,ymin); ymax = max(y,ymax)
 		zmin = min(z,zmin); zmax = max(z,zmax)
 		rmin = min(r,rmin); rmax = max(r,rmax)
-	        redshift = de_zfromintpl(dble(r))
+	        redshift = de_zfromintpl(r)
 	        vlos = (vx*x + vy*y + vz*z) / r
 	        redobs = redshift + vlos * (1.0+redshift) / const_c
-	        robs = de_get_comovr(dble(redobs))
+	        robs = de_get_comovr(redobs)
 	        rat = robs / r
 		write(2,'(6(1x,f13.6), e14.7, 3(1x,f10.7) )')  x, y, z, vx, &
 		      vy, vz, mass, redshift, redobs, rat

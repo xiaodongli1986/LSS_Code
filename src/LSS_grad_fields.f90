@@ -7,7 +7,7 @@
 	! Next we shall improve the code to do weight calculation & check in 2D: Done!
 	! Check the normalization: properties of nbar before/after normalized; check the boundary carefully!!!:
 
-! Please check dft_ra_ratio in ap_smooth.f90.
+! Please check dft_ra_ratio in LSS_smooth.f90.
 !
 ! Quick find is successful...
 !  Now, we can make quick rho_delta...
@@ -17,9 +17,9 @@
 !####################################
 !This module does smooth
 !####################################
-module ap_grad_fields
-use ap_smooth
-use ap_mu_tools
+module LSS_grad_fields
+use LSS_smooth
+use LSS_mu_tools
 	implicit none
 
 !!! Fixed Settings
@@ -344,7 +344,7 @@ contains
 					write(5,'(8e15.7,i10,11e15.7)') x,y,z,ra,dec,r, gb_cell_mat(ix,iy,iz)%maxdist, deltaradec, &
 						gb_cell_mat(ix,iy,iz)%insphere_numran, gb_cell_mat(ix,iy,iz)%weirat, &
 						gb_cell_mat(ix,iy,iz)%sumwei_acpt, gb_cell_mat(ix,iy,iz)%sumwei_all, &
-						gb_cell_mat(ix,iy,iz)%rhodrhos(1:4), drho, mu, de_zfromintpl(dble(r)), drho*mu
+						gb_cell_mat(ix,iy,iz)%rhodrhos(1:4), drho, mu, de_zfromintpl(r), drho*mu
 
 !					write(5,'(i10,3i4,3x,i8,i6,f10.5,4e15.7)') &
 !						i, ix,iy,iz, gb_cell_mat(ix,iy,iz)%rhodrhoindex, &
@@ -532,4 +532,4 @@ contains
 		est_num_in_x = ( (dble(gb_numallpar)/dble(smnum)) * (x2-x1)*(y2-y1)*(z2-z1) / vol_fun(rmin,rmax) )**(1.0_dl/3.0_dl)
   	
   	end function est_num_in_x
-end module ap_grad_fields	
+end module LSS_grad_fields	

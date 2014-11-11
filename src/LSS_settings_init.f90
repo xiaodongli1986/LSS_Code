@@ -7,8 +7,8 @@
 !####################################
 !This module does smooth
 !####################################
-module ap_settings_init
-use ap_cosmo_funs
+module LSS_settings_init
+use LSS_cosmo_funs
 
 	implicit none
 
@@ -241,7 +241,7 @@ contains
 			endif
 			gb_datalist(j)%x=tmp(i,1); gb_datalist(j)%y=tmp(i,2); gb_datalist(j)%z=tmp(i,3)
 			gb_datalist(j)%r=rms(tmp(i,1:3),3) !these x,y,z,r are values in the fiducial cosmology!
-			gb_datalist(j)%red=de_zfromintpl(dble(gb_datalist(j)%r))
+			gb_datalist(j)%red=de_zfromintpl(gb_datalist(j)%r)
 			if(hasweight.eq..true.) then
 				gb_datalist(j)%mass=tmp(i,4)
 			else
@@ -314,7 +314,7 @@ contains
 				gb_datalist(i)%r=rms(tmp(1:3),3) !these x,y,z,r are values in the fiducial cosmology!
 				wei = wei * int(wcp+0.5)
 				gb_datalist(i)%mass=wcp!min(1.0,real(wcp));!wcp; !mass  
-				gb_datalist(i)%red=de_zfromintpl(dble(gb_datalist(i)%r)) !calculate redshift
+				gb_datalist(i)%red=de_zfromintpl(gb_datalist(i)%r) !calculate redshift
 				i = i+1
 			endif
 			cycle
@@ -380,7 +380,7 @@ contains
 					WCP = max(WCP,1.0_dl)
 				endif
 				gb_datalist(i)%mass= (WCP+WNOZ-1.0)/Completeness*WSTAR*WSEE
-				gb_datalist(i)%red=de_zfromintpl(dble(gb_datalist(i)%r)) !calculate redshift
+				gb_datalist(i)%red=de_zfromintpl(gb_datalist(i)%r) !calculate redshift
 				if(abs(gb_datalist(i)%red-redshift).ge.1.0e-3)then
 					print *, 'WARNING: Large diff in redshift: ', i, gb_datalist(i)%red, redshift
 				endif
@@ -442,7 +442,7 @@ contains
 				if(r>gb_3dranmaxr+rext) cycle ! 
 				gb_ranlist(i)%x=x; gb_ranlist(i)%y=y; gb_ranlist(i)%z=z; gb_ranlist(i)%r = r 
 				! These x,y,z,r are values in the fiducial cosmology
-				gb_ranlist(i)%red = de_zfromintpl(dble(gb_ranlist(i)%r))
+				gb_ranlist(i)%red = de_zfromintpl(gb_ranlist(i)%r)
 				!drop when redshift/radec out of range; * confirm dropping radec is correct *
 				if(iRedshiftrange.le.0.5 .or. iRadecrange.le.0.5 & 
 				   .or. (gb_VetoRej.and.iVeto.le.0.5) .or. (gb_AdsnRej.and.iAnder.le.0.5) & !drop veto/anderson
@@ -680,7 +680,7 @@ contains
 		real(dl) :: r, ra, dec
 		
 		if(printinfo) &
-			write(*,'(A,f7.3,f7.3)') '   (init_AP_cosmo) Initializing using omegam/w = ', real(omegam), real(w)
+			write(*,'(A,f7.3,f7.3)') '   (init_LSS_cosmo) Initializing using omegam/w = ', real(omegam), real(w)
 		gb_omegam 	= omegam
 		gb_w 		= w
 		gb_h 		= h
@@ -688,10 +688,10 @@ contains
 
 		! Calculate rat between current-radius/original-radius for data, random
 		do i = 1, gb_numdata
-			gb_datalist(i)%rat = de_get_comovr(dble(gb_datalist(i)%red)) / gb_datalist(i)%r
+			gb_datalist(i)%rat = de_get_comovr(gb_datalist(i)%red) / gb_datalist(i)%r
 		enddo		
 		do i = 1, gb_numran
-			gb_ranlist(i)%rat = de_get_comovr(dble(gb_ranlist(i)%red)) / gb_ranlist(i)%r
+			gb_ranlist(i)%rat = de_get_comovr(gb_ranlist(i)%red) / gb_ranlist(i)%r
 		enddo
 		
 		! Update the range of x,y,z,r
@@ -720,4 +720,4 @@ contains
 			print *, gb_ranlist(idata)
 		enddo
 	end subroutine test_readindata
-end module ap_settings_init
+end module LSS_settings_init

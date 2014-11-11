@@ -5,7 +5,7 @@
 
 program main
 
-use ap_settings_init
+use LSS_settings_init
 
 implicit none
 

@@ -1,9 +1,9 @@
 
 
-program ap_main
+program LSS_main
 
 use mpi
-use ap_BSK
+use LSS_BSK
 
 	character(len=char_len) :: inputfilename, outputfilename, tmpstr1, tmpstr2, &
 		ngldir = '~/SparseFilaments/code/ngl-beta/bin/getNeighborGraph'
@@ -16,7 +16,7 @@ use ap_BSK
 	call mpi_comm_size(mpi_comm_world,nproc,ierr)
 	call mpi_comm_rank(mpi_comm_world,myid,ierr)
 
-	! datatype: -1 means x,y,z (see ap_settings_init.f90)
+	! datatype: -1 means x,y,z (see LSS_settings_init.f90)
 	gb_i_datatype = gb_dt_xyz
 
 	! rantype: no ran
@@ -101,4 +101,4 @@ use ap_BSK
 
 	call mpi_barrier(mpi_comm_world,ierr)
 	call mpi_finalize(ierr)
-end program ap_main
+end program LSS_main

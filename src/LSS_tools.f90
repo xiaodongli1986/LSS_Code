@@ -1,7 +1,9 @@
-module ap_tools
+!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+module LSS_constants_types
 
 	implicit none
-	
+
+	!###################################################
 	! constants
 	integer, parameter :: char_len = 1000
 	integer, parameter :: dl = KIND(1.0d0)
@@ -33,8 +35,17 @@ module ap_tools
 		integer :: order    ! original order of unsorted data
 		real(dl) :: value       ! values to be sorted by
 	end type group
+end module LSS_constants_types
+!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
+!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+module LSS_variables
+use LSS_constants_types
+	implicit none
+
+	!###################################################
 	! useful variables	
+
 	!! a variable used to control global print for test; used for debug
 	logical, parameter :: gbtp = .true. 
 
@@ -49,6 +60,14 @@ module ap_tools
 	real(dl), allocatable :: gb_RDSR_decs(:), gb_RDSR_rats(:)
 	real(dl) :: gb_RDSR_decmin, gb_RDSR_decmax, gb_RDSR_deltadec
 
+end module LSS_variables
+!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+module LSS_tools
+use LSS_variables
+
+implicit none
 			
 contains
 
@@ -62,7 +81,7 @@ contains
 		! Local
 		character(len=char_len) :: inline
     
-		open(unit=1456,NAME=file_name,ERR=2)
+		open(unit=1456,FILE=file_name,ERR=2)
     
 		line_number = 0
 		do While(1 .eq. 1)
@@ -80,7 +99,6 @@ contains
 
 100		close(1456)
 	end subroutine count_line_number
-	
   !------------------------------------------
   ! read in a file into allocatable array
   !------------------------------------------	
@@ -117,6 +135,8 @@ contains
 		close(4321)
 	end subroutine read_in_revfmt
 
+
+
   !-----------------------------------------------------------
   ! Output a 1-dimensional float array to a file.
   !-----------------------------------------------------------
@@ -128,7 +148,7 @@ contains
 		! Local
 		integer  :: i
 
-		open(unit=60857,name=file_name,err=22)
+		open(unit=60857,FILE=file_name,err=22)
 
 		do i=1, n
 			write(60857,'(e18.11)',err=33) output_data(i)
@@ -149,15 +169,16 @@ contains
   ! Output a 2d float array to a file.
   !-----------------------------------------------------------
 	subroutine output_2d(file_name, output_data)
+		! Dummy
 		character(LEN=char_len) :: file_name
 		real(dl) :: output_data(:,:)
-		integer :: d1, d2 
-		integer  :: i
+		! Local
+		integer :: d1, d2, i
 
 		d1 = size(output_data, 1)
 		d2 = size(output_data, 2)
 
-		open(unit=9873,name=file_name,err=22)
+		open(unit=9873,FILE=file_name,err=22)
 
 		do i=1, d1
 			write(9873,'(<d2>(e18.11,2x))',err=33) output_data(i,1:d2)
@@ -187,7 +208,7 @@ contains
 		d1 = size(output_data, 1)
 		d2 = size(output_data, 2)
 
-		open(unit=9873,name=file_name,err=22)
+		open(unit=9873,FILE=file_name,err=22)
 
 		do i=1, d2
 			write(9873,'(<d1>(e18.11,2x))',err=33) output_data(1:d1,i)
@@ -209,19 +230,7 @@ contains
   !------------------------------------------
   ! 2th order interpolating function.
   !------------------------------------------
-	double precision function intpl_vl(x, x1, f1, x2, f2, x3, f3)
-		double precision :: x, x1, f1, x2, f2, x3, f3
-		double precision :: d1, d2, d3, d12, d13, d23
-		d1  = x - x1
-		d2  = x - x2
-		d3  = x - x3
-		d12 = x1 - x2
-		d13 = x1 - x3
-		d23 = x2 - x3
-		intpl_vl = f1*d2*d3/(d12*d13) - f2*d1*d3/(d12*d23) + f3*d1*d2/(d13*d23)
-	end function intpl_vl	
-	! the same as before, but with dl precision
-	real(dl) function adaptp_intpl_vl(x, x1, f1, x2, f2, x3, f3)
+	real(dl) function intpl_vl(x, x1, f1, x2, f2, x3, f3)
 		real(dl) :: x, x1, f1, x2, f2, x3, f3
 		real(dl) :: d1, d2, d3, d12, d13, d23
 		d1  = x - x1
@@ -230,15 +239,26 @@ contains
 		d12 = x1 - x2
 		d13 = x1 - x3
 		d23 = x2 - x3
-		adaptp_intpl_vl = f1*d2*d3/(d12*d13) - f2*d1*d3/(d12*d23) + f3*d1*d2/(d13*d23)
-	end function adaptp_intpl_vl	
-	
+		intpl_vl = f1*d2*d3/(d12*d13) - f2*d1*d3/(d12*d23) + f3*d1*d2/(d13*d23)
+	end function intpl_vl		
+	! the same as before, but with real(dl)
+	real(dl) function intpl_vl_dp(x, x1, f1, x2, f2, x3, f3)
+		real(dl) :: x, x1, f1, x2, f2, x3, f3
+		real(dl) :: d1, d2, d3, d12, d13, d23
+		d1  = x - x1
+		d2  = x - x2
+		d3  = x - x3
+		d12 = x1 - x2
+		d13 = x1 - x3
+		d23 = x2 - x3
+		intpl_vl_dp = f1*d2*d3/(d12*d13) - f2*d1*d3/(d12*d23) + f3*d1*d2/(d13*d23)
+	end function intpl_vl_dp
 	
 
   !------------------------------------------
   ! get the theta, phi according to x,y. 2D
   !------------------------------------------
-  	real function getangle(x,y)
+  	real(dl) function getangle(x,y)
   		real(dl) :: x, y
   		getangle = asin(y/sqrt(x*x+y*y))
   		if(x<0) then
@@ -247,21 +267,6 @@ contains
   			getangle = 2*const_pi + getangle
   		endif
   	end function getangle
-  	
-  !------------------------------------------
-  ! get the theta, phi according to x,y. 2D
-  !------------------------------------------
-  	real(dl) function getangle_dlpre(x,y)
-  		real(dl) :: x, y
-  		getangle_dlpre = asin(y/sqrt(x*x+y*y))
-  		if(x<0) then
-  			getangle_dlpre = const_pi - getangle_dlpre
-  		elseif(x>0 .and. y<0) then
-  			getangle_dlpre = 2*const_pi + getangle_dlpre
-  		endif
-  	end function getangle_dlpre
-
-
   !------------------------------------------
   ! get r, theta, phi according to x,y,z. 3D
   !------------------------------------------
@@ -271,7 +276,6 @@ contains
 		theta=getangle(z,sqrt(x*x+y*y))
 		phi=getangle(x,y)
   	end subroutine getSC
-  	
   !------------------------------------------
   ! get r, theta, phi according to x,y,z. 3D
   !------------------------------------------  	
@@ -288,7 +292,6 @@ contains
 		y = r*cos(dec2) * sin(ra2)
 		z = r*sin(dec2)
 	end subroutine radecr_to_xyz
-	
   !------------------------------------------
   ! get r, ra, dec according to x,y,z
   !------------------------------------------
@@ -302,15 +305,13 @@ contains
 		dec = (const_pi/2.0 - getangle(z,sqrt(x*x+y*y))) / degreefac
 		ra = getangle(x,y) / degreefac
   	end subroutine xyz_to_radecr
-  	
-  	
   !------------------------------------------
   ! find root: f(x) == f0
   !------------------------------------------  	
-  	double precision function findroot(f, f0, xl, xr, gv_tol, gv_maxstep)
-		double precision, external :: f
-  		double precision :: f0, xl, xr, tol, xm, fl, fr, fm
-  		double precision, optional :: gv_tol, gv_maxstep
+  	real(dl) function findroot(f, f0, xl, xr, gv_tol, gv_maxstep)
+		real(dl), external :: f
+  		real(dl) :: f0, xl, xr, tol, xm, fl, fr, fm
+  		real(dl), optional :: gv_tol, gv_maxstep
   		integer :: maxstep, step
   		
   		if(present(gv_tol)) then
@@ -470,10 +471,10 @@ contains
   !---------------------------------------------------------------
   ! Simpson Integration
   !---------------------------------------------------------------
-	double precision function Simpson(fun,xleft,xright,N)   
-		double precision, external :: fun
-		double precision :: x1,x2,xleft,xright,BC
-		double precision :: f1,f2
+	real(dl) function Simpson(fun,xleft,xright,N)   
+		real(dl), external :: fun
+		real(dl) :: x1,x2,xleft,xright,BC
+		real(dl) :: f1,f2
 		integer :: i, N
 		BC=(xright-xleft)/DBLE(N)
 		x1=xleft;x2=x1+BC;
@@ -488,13 +489,13 @@ contains
   !---------------------------------------------------------------
   ! 4rd order Runge-Kutta 
   !---------------------------------------------------------------
-	double precision function RK(dfundz, zleft, funleft, zright, N)
+	real(dl) function RK(dfundz, zleft, funleft, zright, N)
 		! Dummy
-		double precision, external :: dfundz
-		double precision, intent(in) :: zleft, funleft, zright
+		real(dl), external :: dfundz
+		real(dl), intent(in) :: zleft, funleft, zright
 		integer, intent(in) :: N
 		! Local
-		double precision :: BC, K1, K2, K3, K4, nowz, nowfun
+		real(dl) :: BC, K1, K2, K3, K4, nowz, nowfun
 		integer :: i
 		BC = (zright-zleft) / N
 		nowz = zleft
@@ -1805,7 +1806,7 @@ contains
 		x1 = gb_RDSR_decs(idec-1); f1 = gb_RDSR_rats(idec-1);
 		x2 = gb_RDSR_decs(idec);   f2 = gb_RDSR_rats(idec);
 		x3 = gb_RDSR_decs(idec+1); f3 = gb_RDSR_rats(idec+1);
-		get_RDSR =  adaptp_intpl_vl(dec, x1, f1, x2, f2, x3, f3)
+		get_RDSR =  intpl_vl(dec, x1, f1, x2, f2, x3, f3)
 	end function get_RDSR
 	
         !! functons used to do rotation
@@ -1813,28 +1814,28 @@ contains
                 real(dl) :: theta, Matrix(3,3)
                 Matrix = 0.0_dl
                 Matrix(1,1) = 1.0
-                Matrix(2,2) = dcos(theta)
-                Matrix(2,3) = -dsin(theta)
-                Matrix(3,2) = dsin(theta)
-                Matrix(3,3) = dcos(theta)
+                Matrix(2,2) = dcos(dble(theta))
+                Matrix(2,3) = -dsin(dble(theta))
+                Matrix(3,2) = dsin(dble(theta))
+                Matrix(3,3) = dcos(dble(theta))
         end subroutine RotateMatrixX
         subroutine RotateMatrixY(theta, Matrix)        
                 real(dl) :: theta, Matrix(3,3)
                 Matrix = 0.0_dl
                 Matrix(2,2) = 1.0
-                Matrix(1,1) = dcos(theta)
-                Matrix(1,3) = -dsin(theta)
-                Matrix(3,1) = dsin(theta)
-                Matrix(3,3) = dcos(theta)
+                Matrix(1,1) = dcos(dble(theta))
+                Matrix(1,3) = -dsin(dble(theta))
+                Matrix(3,1) = dsin(dble(theta))
+                Matrix(3,3) = dcos(dble(theta))
          end subroutine RotateMatrixY
         subroutine RotateMatrixZ(theta, Matrix)        
                 real(dl) :: theta, Matrix(3,3)
                 Matrix = 0.0_dl
                 Matrix(3,3) = 1.0
-                Matrix(1,1) = dcos(theta)
-                Matrix(1,2) = -dsin(theta)
-                Matrix(2,1) = dsin(theta)
-                Matrix(2,2) = dcos(theta)
+                Matrix(1,1) = dcos(dble(theta))
+                Matrix(1,2) = -dsin(dble(theta))
+                Matrix(2,1) = dsin(dble(theta))
+                Matrix(2,2) = dcos(dble(theta))
         end subroutine RotateMatrixZ
         subroutine RotateMatrix(thetax,thetay,thetaz,Matrix)
                 ! Dummy
@@ -1971,4 +1972,4 @@ contains
         	write(tmpstr2,'(f12.4)') w
         	get_omwstr = 'om'//trim(adjustl(tmpstr1))//'_w'//trim(adjustl(tmpstr2))
         end function get_omwstr
-end module ap_tools
+end module LSS_tools

@@ -1,9 +1,9 @@
 
 
-program ap_main
+program LSS_main
 
 use mpi
-use ap_BSK
+use LSS_BSK
 implicit none
 
 	! Settings
@@ -230,7 +230,7 @@ implicit none
 		
 		call init_cosmo(omegam,w,h_dft,printinfo)
 		call init_mult_lists(printinfo)
-		call do_cell_init((dble(gb_numdata)**0.33), printinfo)	
+		call do_cell_init((real(gb_numdata)**0.33_dl), printinfo)	
 
 		call BSK(gb_datafile, omegam, w, beta, gb_output_name, printinfo, numNNB, gb_minimalr_cut, gb_maximalr_cut, &
 			do_nglcrosscheck, ngldir, outputBSKindex=.true., outputBSKinfo=.false., outputxyz=.false.,do_init=.false.)
@@ -244,4 +244,4 @@ implicit none
      enddo
 	call mpi_barrier(mpi_comm_world,ierr)
 	call mpi_finalize(ierr)
-end program ap_main
+end program LSS_main

@@ -4,17 +4,12 @@
 !####################################
 !This module does smooth
 !####################################
-module ap_cell
-use ap_settings_init
+module LSS_cell
+use LSS_settings_init
 
 	implicit none
 
 !!! Fixed Settings
-
-	! Normalize particle mass by the local density
-	logical :: gb_dodensitynorm = .true.
-	integer, parameter :: gb_normn_nbin = 20, gb_normn_nnorm = 2
-	integer, parameter :: gb_radecmat_size = 800 ! size of the radecmat size
 
 	! Fixed grid range with given values
 	logical,  public, parameter :: use_gbfixgridrange = .false. ! use the range from some given values
@@ -32,6 +27,11 @@ use ap_settings_init
 	logical, public :: gb_usenumdensity
 
 !!! Important Variables
+	! Normalize particle mass by the local density
+	logical :: gb_dodensitynorm = .true.
+	integer, parameter :: gb_normn_nbin = 20, gb_normn_nnorm = 2
+	integer, parameter :: gb_radecmat_size = 800 ! size of the radecmat size
+
 	! Lists of x,y,z,mass/weight
 	integer :: gb_num_xyz_mass
 	real(dl), allocatable :: gb_xyz_list(:,:), gb_mass_list(:), gb_r_list(:)
@@ -71,7 +71,6 @@ use ap_settings_init
 		gb_radecbdmat_decleft(:), gb_radecbdmat_decright(:)
 	
 contains
-
 
   !------------------------------------------
   ! clean up allocatable arrays
@@ -211,9 +210,9 @@ contains
 
 		gbdeltax = gb_cellwidth; gbdeltay = gb_cellwidth; gbdeltaz = gb_cellwidth
 
-		gbgridxmax = gbgridxmin + gbdeltax*dble(gb_n_cellx)
-		gbgridymax = gbgridymin + gbdeltay*dble(gb_n_celly)
-		gbgridzmax = gbgridzmin + gbdeltaz*dble(gb_n_cellz)
+		gbgridxmax = gbgridxmin + gbdeltax*gb_n_cellx
+		gbgridymax = gbgridymin + gbdeltay*gb_n_celly
+		gbgridzmax = gbgridzmin + gbdeltaz*gb_n_cellz
 		
 		gbgridrmax = sqrt(gbgridxmax**2.0+gbgridymax**2.0+gbgridzmax**2.0)
 
@@ -266,8 +265,8 @@ contains
 		
 		if(printinfo) then
 			write(*,'(20x,A,2(i10,A,f6.3,A))')  'Data/Random points lying outside the grid: ', &
-				numskipdata,' (',numskipdata/dble(gb_numdata)*100.0,'%), ', &
-				numskipran ,' (',numskipran/dble(gb_numran)*100.0,'%)'
+				numskipdata,' (',dble(numskipdata/gb_numdata)*100.0,'%), ', &
+				numskipran ,' (',dble(numskipran/gb_numran)*100.0,'%)'
 		endif
 				
 		! allocate cell in pixels having halos
@@ -287,7 +286,7 @@ contains
 				allocate(gb_cell_mat(ix,iy,iz)%idatalist(gb_cell_mat(ix,iy,iz)%numdata))
 				numhasdata = numhasdata + 1.0_dl
 				avgdatanum = avgdatanum + gb_cell_mat(ix,iy,iz)%numdata
-				maxdatanum = max(maxdatanum,dble(gb_cell_mat(ix,iy,iz)%numdata))
+				maxdatanum = max(dble(maxdatanum),dble(gb_cell_mat(ix,iy,iz)%numdata))
 			endif
 			if(gb_cell_mat(ix,iy,iz)%numran > 0) then
 				if(gb_cell_mat(ix,iy,iz)%numran > max_incell_point_num) then
@@ -298,7 +297,7 @@ contains
 				allocate(gb_cell_mat(ix,iy,iz)%iranlist(gb_cell_mat(ix,iy,iz)%numran))
 				numhasran = numhasran + 1.0_dl
 				avgrannum = avgrannum + gb_cell_mat(ix,iy,iz)%numran
-				maxrannum = max(maxrannum,dble(gb_cell_mat(ix,iy,iz)%numran))
+				maxrannum = max(dble(maxrannum),dble(gb_cell_mat(ix,iy,iz)%numran))
 			endif
 		enddo
 		enddo
@@ -389,7 +388,7 @@ contains
 		
 		if(printinfo) print *, '  (do_radecrancell_init begin) initializing 2d Grid of Cells for ra/dec random.'
 
-		gbdeltara = (gbramaxradecran - gbraminradecran) / dble(num_in_x);  ! width in ra direction
+		gbdeltara = (gbramaxradecran - gbraminradecran) / num_in_x;  ! width in ra direction
 		gbdeltadec = gbdeltara ! width in dec direction; keep the same value as ra direction 
 		
 		! how many cells in ra/dec direction
@@ -399,8 +398,8 @@ contains
 		! Grid range, in ra/dec directions
 		gbgridramin  = gbraminradecran
 		gbgriddecmin = gbdecminradecran
-		gbgridramax = gbgridramin + gbdeltara*dble(gb_n_cellra)
-		gbgriddecmax = gbgriddecmin + gbdeltara*dble(gb_n_celldec)
+		gbgridramax = gbgridramin + gbdeltara*gb_n_cellra
+		gbgriddecmax = gbgriddecmin + gbdeltara*gb_n_celldec
 
 		if(printinfo) then
 			write(*,'(20x,A,f12.5,2x,f12.5,A)')  'Grid Range of ra:  (', gbgridramin, gbgridramax, ')'
@@ -439,7 +438,7 @@ contains
 		
 		if(printinfo) then
 			write(*,'(20x,A,1(i10,A,f6.3,A))')  'ra/dec random points lying outside the grid: ', &
-				numskipradecran,' (',numskipradecran/dble(gb_numradecran)*100.0,'%) '
+				numskipradecran,' (',dble(numskipradecran/gb_numradecran)*100.0,'%) '
 		endif
 				
 		! allocate cell in pixels having ra/dec ran
@@ -459,7 +458,7 @@ contains
 				allocate(gb_radecrancell_mat(ira,idec)%iradecranlist(gb_radecrancell_mat(ira,idec)%numradecran))
 				numhasradecran = numhasradecran + 1.0_dl
 				avgradecrannum = avgradecrannum + gb_radecrancell_mat(ira,idec)%numradecran
-				maxradecrannum = max(maxradecrannum,dble(gb_radecrancell_mat(ira,idec)%numradecran))
+				maxradecrannum = max(dble(maxradecrannum),dble(gb_radecrancell_mat(ira,idec)%numradecran))
 			endif
 		enddo
 		enddo
@@ -802,7 +801,7 @@ contains
 				do i = 1, nbins
 					write(*,'(20x,i3,2x,i10,4(2x,f12.3),4x,e14.7,4x,e14.7,4x,f8.5)') &
 						i,int(numinbin(i)),binned_r_list(i),&
-						de_zfromintpl(dble(binned_r_list(i))), redgelist(i), redgelist(i+1), &
+						de_zfromintpl(binned_r_list(i)), redgelist(i), redgelist(i+1), &
 						quan_av_list(i), poly(binned_r_list(i),polycoef,polyorder), &
 						poly(binned_r_list(i),polycoef,polyorder) / quan_av_list(i)
 				enddo
@@ -815,7 +814,7 @@ contains
 				open(unit=123948,file=trim(adjustl(gb_suboutput_name))//trim(adjustl(tmpstr1)))
 				write(123948,*) '# fmt: r, redshift, nbar, nbar(fitted)'
 				do i = 1, nbins
-				  	write(123948,'(4e15.7)') binned_r_list(i), de_zfromintpl(dble(binned_r_list(i))), &
+				  	write(123948,'(4e15.7)') binned_r_list(i), de_zfromintpl(binned_r_list(i)), &
 					  	quan_av_list(i), poly(binned_r_list(i),polycoef,polyorder)
 				enddo
 				close(123948)
@@ -829,9 +828,9 @@ contains
   				if(ibin.ge.nbins-1.or.ibin.le.2) then
   					binnedrho = quan_av_list(ibin)
   				else
-					binnedrho = intpl_vl(dble(r), dble(binned_r_list(ibin-1)), dble(quan_av_list(ibin-1)), &
-						dble(binned_r_list(ibin)), dble(quan_av_list(ibin)), &
-						dble(binned_r_list(ibin+1)), dble(quan_av_list(ibin+1)))
+					binnedrho = intpl_vl(r, binned_r_list(ibin-1), quan_av_list(ibin-1), &
+						binned_r_list(ibin), quan_av_list(ibin), &
+						binned_r_list(ibin+1), quan_av_list(ibin+1))
 				endif
 !  					r1 = binned_r_list(ibin);r2 = binned_r_list(ibin+1)
 !  					rho1 = quan_av_list(ibin);rho2 = quan_av_list(ibin+1)
@@ -876,6 +875,6 @@ contains
 		enddo
 	end subroutine test_grid
 		
-end module ap_cell	
+end module LSS_cell	
 	
 
