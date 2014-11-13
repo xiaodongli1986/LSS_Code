@@ -232,7 +232,7 @@ contains
 		endif
 
 		if(present(do_not_init_cellmat)) then
-			if(do_not_init_cellmat .eq. .true.) return
+			if(do_not_init_cellmat) return
 		endif
 		
 		!allocating gb_cell_mat 
@@ -265,8 +265,8 @@ contains
 		
 		if(printinfo) then
 			write(*,'(20x,A,2(i10,A,f6.3,A))')  'Data/Random points lying outside the grid: ', &
-				numskipdata,' (',dble(numskipdata/gb_numdata)*100.0,'%), ', &
-				numskipran ,' (',dble(numskipran/gb_numran)*100.0,'%)'
+				numskipdata,' (',dble((numskipdata+1)/dble(1+gb_numdata))*100.0,'%), ', &
+				numskipran ,' (',dble((numskipran+1)/dble(1+gb_numran))*100.0,'%)'
 		endif
 				
 		! allocate cell in pixels having halos
@@ -793,8 +793,8 @@ contains
 		  	call poly_fit(binned_r_list,quan_av_list,polycoef,nbins,polyorder)
 			if(printinfo.and..false.) then
 				print *
-				write(*,'(A,<nbins>(e14.7,","))')  'binned_r_list: ', binned_r_list
-				write(*,'(A,<nbins>(e14.7,","))')  'quan_av_list:  ', quan_av_list
+				write(*,*)  'binned_r_list: ', binned_r_list
+				write(*,*)  'quan_av_list:  ', quan_av_list
 				print *
 				write(*,'(19x,A,6x,A,10x,A,12x,A,6x,A,3x,A)') ' bin     #-in-bin     distance','redshift',&
 					'   range of r ','density','density(fit)','rat(fit/orig)'

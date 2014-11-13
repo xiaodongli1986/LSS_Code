@@ -205,8 +205,11 @@ implicit none
 		print *, '#####################################'
 
 		print *
-		write(*,'(10x,A,<num_omw>(f6.3,1x))') 'Lists of omegam: ', om_w_list(1,1:num_omw)
-		write(*,'(10x,A,<num_omw>(f6.3,1x))') 'Lists of w     : ', om_w_list(2,1:num_omw)
+		write(*,'(10x,A,$)') 'Lists of omegam/w: '
+		do i = 1, num_omw
+			write(*,'(f6.3,"/",f6.3,$)') om_w_list(1:2,i)
+		enddo
+		print *
 		print *
 	endif
 	

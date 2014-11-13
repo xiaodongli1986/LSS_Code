@@ -191,7 +191,7 @@ contains
 		endif
 		
 		n = gb_n_cellx*gb_n_celly*gb_n_cellz
-		write(*,'(25x,A,\)') ' '
+		write(*,'(25x,A,$)') ' '
 		! n2 counts how many pixels in shell and has no boundary effect (pass has_boundary_effect)
 		numransmnum = 0; num_scan= gb_n_cellx*gb_n_celly*gb_n_cellz
 		iscan=0; n0=0; n1=0; n2=0; gb_num_NNBSearch=0; gb_num_NNBReSearch = 0;
@@ -213,7 +213,8 @@ contains
                                 write(tmpstr1,*) percent
                                 write(tmpstr2,'(f6.3)') gb_omegam
                                 write(tmpstr3,'(f6.3)') gb_w
-                                write(*,'(A\)') trim(adjustl(tmpstr1))//'%('//trim(adjustl(tmpstr2))//','//trim(adjustl(tmpstr3))//')==>'
+                                write(*,'(A,$)') trim(adjustl(tmpstr1))//'%('//trim(adjustl(tmpstr2))&
+					//','//trim(adjustl(tmpstr3))//')==>'
                         endif
                         if(iscan .eq. num_scan) then
                                 write(*,'(A)') 'Finish'
@@ -325,7 +326,14 @@ contains
 
 			open(file=trim(adjustl(gb_suboutput_name))//trim(adjustl(tmpstr1)),unit=5)
 		
-			write(5,'(A)') '# fmt: 1 x,2 y,3 z,4 ra,5 dec,6 r,7 gb_cell_mat(ix,iy,iz)%maxdist, 8 deltaradec, 9 gb_cell_mat(ix,iy,iz)%insphere_numran, 10 gb_cell_mat(ix,iy,iz)%weirat, 11 gb_cell_mat(ix,iy,iz)%sumwei_acpt, 12 gb_cell_mat(ix,iy,iz)%sumwei_all, 13 rho, 14 drhodx, 15 drhody, 16 drhodz, 17 drho, 18 mu, 19 redshift, 20 drho_los'
+			write(5,'(A)') '# fmt: 1 x,2 y,3 z,4 ra,5 dec,'//&
+				'6 r,7 gb_cell_mat(ix,iy,iz)%maxdist, '//&
+				'8 deltaradec, 9 gb_cell_mat(ix,iy,iz)%insphere_numran,'//&
+				' 10 gb_cell_mat(ix,iy,iz)%weirat, '//&
+				'11 gb_cell_mat(ix,iy,iz)%sumwei_acpt,'//&
+				' 12 gb_cell_mat(ix,iy,iz)%sumwei_all, '//&
+				'13 rho, 14 drhodx, 15 drhody, 16 drhodz,'//&
+				' 17 drho, 18 mu, 19 redshift, 20 drho_los'
 
 			i = 0
 			do ix = 1, gb_n_cellx

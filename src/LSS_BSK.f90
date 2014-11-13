@@ -188,7 +188,7 @@ contains
 		do i1 = 1, gb_numdata
 			! avoid redudant calculation
 			if(mod(i1,di1).eq.1) then
-				write(*,'(i2,A\)') (i1/di1)*100/idiv, '%==>'
+				write(*,'(i2,A,$)') (i1/di1)*100/idiv, '%==>'
 			endif
 !			call NNBSearch_data(gb_xyz_list(1,i1),gb_xyz_list(2,i1),gb_xyz_list(3,i1),&
 !				numNNB,1.0_dl,selected_list) 
@@ -285,7 +285,8 @@ contains
 			cmdstr = 'rm '//trim(adjustl(file_ngl))
 			call system(cmdstr)
 			write(tmpstr1,'(f5.1)') beta		
-			cmdstr = trim(adjustl(ngldir))//' -i '//trim(adjustl(file_xyz))//' -d 3 -b '//trim(adjustl(tmpstr1))//' >> '//trim(adjustl(file_ngl))
+			cmdstr = trim(adjustl(ngldir))//' -i '//&
+			 trim(adjustl(file_xyz))//' -d 3 -b '//trim(adjustl(tmpstr1))//' >> '//trim(adjustl(file_ngl))
 			write(*,'(7x, A)') trim(adjustl(cmdstr))
 			call system(cmdstr)
 		endif
@@ -356,10 +357,13 @@ contains
 		call gd_mldprho_chi2s(cs, 0.0_dl, chisqlist, dfchisqlist, multdfchisqlist, numdrop, BSKmode=.true.)
 		
 		write(*,*) '  (BSK_stat) results of chisqs:'
-		write(*,'(36x,<cs%numdrop>(f8.3,1x))')	chisqlist(1:cs%numdrop)
-		write(*,'(A,12x,<cs%numdrop>(f8.3,1x))') '    2 bins (old method):', dfchisqlist(1:cs%numdrop)
+		write(*,'(36x,A)')	&
+		  trim(adjustl(WriteFmtEFloat(cs%numdrop,chisqlist(1:cs%numdrop))))
+		write(*,'(A,12x,A)') '    2 bins (old method):', &
+		  trim(adjustl(WriteFmtEFloat(cs%numdrop,dfchisqlist(1:cs%numdrop))))
 		do j = 1, nbinchisq	
-			write(*,'(4x,i4,A,24x,<cs%numdrop>(f8.3,1x))') nbinchisqlist(j),' bins:', multdfchisqlist(j,1:cs%numdrop)
+			write(*,'(4x,i4,A,24x,A)') nbinchisqlist(j),' bins:', &
+			 trim(adjustl(WriteFmtEFloat(cs%numdrop,multdfchisqlist(j,1:cs%numdrop))))
 		enddo
 		
 	end subroutine BSK_stat

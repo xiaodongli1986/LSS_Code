@@ -386,7 +386,7 @@ contains
 		if(imin<1.or.imin>gb_n_cellx.or.jmin<1.or.jmax>gb_n_celly.or.kmin<1.or.kmax>gb_n_cellz) then
 			erflag = 1 ! 1 means out of grid range
 		else
-			erflag = .false.
+			erflag = 0
 		endif
 
 		insphere_numran = 0
@@ -472,7 +472,7 @@ contains
 		if(imin<1.or.imin>gb_n_cellra.or.jmin<1.or.jmax>gb_n_celldec) then
 			erflag = 1 ! 1 means out of grid range
 		else
-			erflag = .false.
+			erflag = 0
 		endif
 
 		est_insphere_numradecran = 0

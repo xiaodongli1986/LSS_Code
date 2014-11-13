@@ -587,8 +587,12 @@ use LSS_chisq
 		enddo
 		print *
 		write(*,'(A,i5)') '   Num of omegam/w       = ', num_omw	
-		write(*,'(10x,A,<num_omw>(f6.3,1x))') 'list of omegam: ', om_w_list(1,1:num_omw)
-		write(*,'(10x,A,<num_omw>(f6.3,1x))') 'list of w     : ', om_w_list(2,1:num_omw)
+                write(*,'(10x,A,$)') 'Lists of omegam/w: '
+                do i = 1, num_omw
+                        write(*,'(f6.3,"/",f6.3,$)') om_w_list(1:2,i)
+                enddo
+                print *
+                print *
 
 	endif
 
@@ -636,11 +640,13 @@ use LSS_chisq
 		gb_chisq_initied = .true.
 
 		call gf_mldprho_chi2s(om, w, h_dft, cs, rhochi, rhodfchi, multdfchi, cs%numdrop, calc_comvr = .true.)
-		write(*,'(A,i3,A,<2>(f8.3,1x))') '   Step ',i,'. Chisqs without RSD:', om, w
-		write(*,'(36x,<cs%numdrop>(f8.3,1x))')	rhochi(1:cs%numdrop)
-		write(*,'(A,12x,<cs%numdrop>(f8.3,1x))') '    2 bins (old method):', rhodfchi(1:cs%numdrop)
+		write(*,'(A,i3,A,2(f8.3,1x))') '   Step ',i,'. Chisqs without RSD:', om, w
+		write(*,'(36x,A)') trim(adjustl(WriteFmtEFloat(cs%numdrop, rhochi(1:cs%numdrop))))
+		write(*,'(A,12x,A)') '    2 bins (old method):', &
+		  trim(adjustl(WriteFmtEFloat(cs%numdrop,rhodfchi(1:cs%numdrop))))
 		do j = 1, nbinchisq	
-			write(*,'(4x,i4,A,24x,<cs%numdrop>(f8.3,1x))') nbinchisqlist(j),' bins:', multdfchi(j,1:cs%numdrop)
+			write(*,'(4x,i4,A,24x,A)') nbinchisqlist(j),' bins:', &
+			 trim(adjustl(WriteFmtEFloat(cs%numdrop,multdfchi(j,1:cs%numdrop))))
 		enddo
 	
 		call cpu_time(time2)

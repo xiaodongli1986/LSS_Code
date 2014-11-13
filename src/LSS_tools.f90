@@ -135,8 +135,23 @@ contains
 		close(4321)
 	end subroutine read_in_revfmt
 
+  !-----------------------------------------------------------
+  ! Fmt output
+  !-----------------------------------------------------------
+        character(len=char_len) function WriteFmtEFloat(num_float, floatvalues)
+                ! Dummy
+                integer, intent(in) :: num_float
+                real(dl), intent(in) :: floatvalues(num_float)
+                ! Local
+                character(len=char_len) :: tmpstr, tmpstr0
+                integer :: i
+                WriteFmtEFloat = ''
+                do i = 1, num_float
+                        write(tmpstr0, '(e14.7)') floatvalues(i)
+                        WriteFmtEFloat = trim(adjustl(WriteFmtEFloat))//' '//trim(adjustl(tmpstr0))
+                enddo
 
-
+        end function WriteFmtEFloat
   !-----------------------------------------------------------
   ! Output a 1-dimensional float array to a file.
   !-----------------------------------------------------------
@@ -168,32 +183,35 @@ contains
   !-----------------------------------------------------------
   ! Output a 2d float array to a file.
   !-----------------------------------------------------------
-	subroutine output_2d(file_name, output_data)
-		! Dummy
-		character(LEN=char_len) :: file_name
-		real(dl) :: output_data(:,:)
-		! Local
-		integer :: d1, d2, i
+        subroutine output_2d(file_name, output_data)
+                ! Dummy
+                character(LEN=char_len) :: file_name
+                real(dl) :: output_data(:,:)
+                ! Local
+                integer :: d1, d2, i, j
 
-		d1 = size(output_data, 1)
-		d2 = size(output_data, 2)
+                d1 = size(output_data, 1)
+                d2 = size(output_data, 2)
 
-		open(unit=9873,FILE=file_name,err=22)
+                open(unit=9873,FILE=file_name,err=22)
 
-		do i=1, d1
-			write(9873,'(<d2>(e18.11,2x))',err=33) output_data(i,1:d2)
-		enddo
+                do i=1, d1
+			do j = 1, d2-1
+                        	write(9873,'(e18.11,"  ",$)',err=33) output_data(i,j)
+			enddo
+                       	write(9873,'(e18.11)',err=33) output_data(i,d2)
+                enddo
 
-		close(9873)
-		return
+                close(9873)
+                return
 
-22		write(*,*) "Error occurs when opening the file ", file_name
-		close(9873)
-		stop
+22              write(*,*) "Error occurs when opening the file ", file_name
+                close(9873)
+                stop
 
-33		write(*,*) "Error occurs when writing into the file ", file_name
-		close(9873)
-		stop
+33              write(*,*) "Error occurs when writing into the file ", file_name
+                close(9873)
+                stop
 	end subroutine output_2d
   !-----------------------------------------------------------
   ! Output a 2d float array to a file; 
@@ -203,7 +221,7 @@ contains
 		character(LEN=char_len) :: file_name
 		real(dl) :: output_data(:,:)
 		integer :: d1, d2 
-		integer  :: i
+		integer  :: i,j
 
 		d1 = size(output_data, 1)
 		d2 = size(output_data, 2)
@@ -211,7 +229,10 @@ contains
 		open(unit=9873,FILE=file_name,err=22)
 
 		do i=1, d2
-			write(9873,'(<d1>(e18.11,2x))',err=33) output_data(1:d1,i)
+			do j = 1, d1-1
+				write(9873,'(e18.11,"  ")',advance='no',err=33) output_data(j,i)
+			enddo
+			write(9873,'(e18.11)',err=33) output_data(d1,i)
 		enddo
 
 		close(9873)
@@ -435,7 +456,7 @@ contains
 			return
 		endif
 		if(q<2.0_dl) then
-			der_w_kernel_hfree = sigma * -0.75_dl*(2.0_dl-q)**2.0_dl
+			der_w_kernel_hfree = sigma * (-0.75_dl)*(2.0_dl-q)**2.0_dl
 			return
 		endif
 		der_w_kernel_hfree = 0.0_dl
@@ -1700,7 +1721,8 @@ contains
   		real(dl), intent(in) :: quan_val_list(ndat), quan_r_list(ndat) 
   		real(dl), intent(in) :: rmin, rmax
   		integer, intent(in) :: ndat, num_bins
-  		real(dl), intent(out) :: quan_val_av_list(num_bins), quan_val_er_list(num_bins), r_av_list(num_bins),  quan_val_var_list(num_bins)
+  		real(dl), intent(out) :: quan_val_av_list(num_bins), &
+			quan_val_er_list(num_bins), r_av_list(num_bins),  quan_val_var_list(num_bins)
   		! Local
   		real(dl) :: r, quan_val_av,quan_val_var, quanval1,quanval2,quanvalmid, rmincube,totvol,deltavol
   		integer :: i, n, m, j, binned_i, numsmaller

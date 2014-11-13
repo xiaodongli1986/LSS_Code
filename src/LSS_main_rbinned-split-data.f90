@@ -91,10 +91,14 @@ implicit none
       enddo
 
       print *, 'Information also output to file: ', trim(adjustl(outputinfo))
-      write(*,'(A,i3,A,(<numrbin+1>(f14.5,1x)))')  '   Edges of ',numrbin,' r   bins: ',   rcutlist(1:numrbin+1)
-      write(*,'(A,(<numrbin>(L3)))')  '   Whether output them: ',   routputlist(1:numrbin)
-      write(100,'(A,i3,A,(<numrbin+1>(f14.5,1x)))')  '   Edges of ',numrbin,' r   bins: ',   rcutlist(1:numrbin+1)
-      write(100,'(A,(<numrbin>(L3)))')  '   Whether output them: ',   routputlist(1:numrbin)
+      write(*,'(A,i3,A,$)')  '   Edges of ',numrbin,' r   bins: ' 
+      write(*,*) '        ', rcutlist(1:numrbin+1)
+      write(*,'(A,$)')  '   Whether output them: '  
+      write(*,*) '        ', routputlist(1:numrbin)
+      write(100,'(A,i3,A,$)')  '   Edges of ',numrbin,' r   bins: '
+      write(100,*) '        ',   rcutlist(1:numrbin+1)
+      write(100,'(A,$)')  '   Whether output them: '
+      write(100,*) '        ',   routputlist(1:numrbin)
       
       print *, 'Creating files saving the results...'
       write(100,'(A)') 'Creating files saving the results...'

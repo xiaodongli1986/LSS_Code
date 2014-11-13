@@ -333,7 +333,7 @@ contains
 		
 		chisq_of_mu_data_shift = sum(chisqlist) / (num_shift + 1.0)
 		if(printinfo) then
-			write(*,'(A,<num_shift+1>(f11.7,1x))') ' list of chisqs:', real(chisqlist)
+			write(*,*) ' list of chisqs:', real(chisqlist)
 			call get_mean_var(chisqlist, mean, var)
 			write(*,*) 'Mean, var, sqrt(var) = ', real(mean), real(var), real(sqrt(var))
 		endif

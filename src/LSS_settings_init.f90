@@ -209,7 +209,7 @@ contains
 		integer :: i,j, totnumdata
 		real(dl), allocatable :: tmp(:,:)
 		
-		if(hasweight.eq..true.) then
+		if(hasweight) then
 			call read_in (gb_datafile, 4, totnumdata, tmp)
 		else
 			call read_in (gb_datafile, 3, totnumdata, tmp)
@@ -242,7 +242,7 @@ contains
 			gb_datalist(j)%x=tmp(i,1); gb_datalist(j)%y=tmp(i,2); gb_datalist(j)%z=tmp(i,3)
 			gb_datalist(j)%r=rms(tmp(i,1:3),3) !these x,y,z,r are values in the fiducial cosmology!
 			gb_datalist(j)%red=de_zfromintpl(gb_datalist(j)%r)
-			if(hasweight.eq..true.) then
+			if(hasweight) then
 				gb_datalist(j)%mass=tmp(i,4)
 			else
 				gb_datalist(j)%mass=1.0
@@ -407,7 +407,7 @@ contains
 		real(dl) :: x,y,z,r,rext=100.0_dl
 
 		! count how many randoms to read in (only read in randoms with r< gb_3dranmaxr+100.0)
-		if(printinfo) write(*,'(A,\)') '   (readin_HR3ran) Counting line-# of files...'
+		if(printinfo) write(*,'(A)',advance='no') '   (readin_HR3ran) Counting line-# of files...'
 		gb_numran = 0
 		do i_ran = 1, gb_numranfile
 			open(unit=4401,file=gb_ranfilelist(i_ran))
@@ -420,7 +420,7 @@ contains
 100				exit
 			enddo
 			close(4401)
-			write(*,'(1x,i8,\)') gb_numran
+			write(*,'(1x,i8,$)') gb_numran
 		enddo
 		print *
 

@@ -17,7 +17,7 @@ F90C = mpif90 -heap-arrays
 F90FLAGS = 
 
 default: $(EXE1)
-all: $(EXE0) $(EXE1) $(EXE2) $(EXE3) $(EXE4) $(EXE5) $(EXE6) $(EXE7) $(EXE8) $(EXE9) $(EXE10) $(EXE11) $(EXE12)
+all: $(EXE0) $(EXE1) $(EXE2) $(EXE3) $(EXE4) $(EXE5) $(EXE6) $(EXE7) $(EXE8) $(EXE9) $(EXE10) $(EXE11) $(EXE12) 
 test: $(EXE0)
 bsk: $(EXE2) $(EXE3)
 rmass: $(EXE4)

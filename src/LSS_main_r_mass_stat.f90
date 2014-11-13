@@ -102,8 +102,8 @@ implicit none
 		endif
 	enddo
 	
-	write(*,'(A,<numrbin+1>(f18.7,";"))')     '  Edges of r:    ', redges(1:numrbin+1)
-	write(*,'(A,<nummassbin+1>(e15.7,";"))') '  Edges of mass: ', massedges(1:nummassbin+1)
+	write(*,*)     '  Edges of r:    ', redges(1:numrbin+1)
+	write(*,*) '  Edges of mass: ', massedges(1:nummassbin+1)
 	
 	binnednum = 0
 	

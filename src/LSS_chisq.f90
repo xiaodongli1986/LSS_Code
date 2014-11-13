@@ -12,9 +12,6 @@ implicit none
 	! access type when outputing info of mu/rho/absrho
 	character(len=char_len), parameter :: gb_muinfo_access = 'append'
 
-	! whether calculate abs rho
-	logical, parameter :: gb_calc_absdrho_chisq = .false.
-
 	! jackknife n
 	integer, parameter :: gb_numjkf = 1
 	integer, parameter :: gb_jkf_njkfs(gb_numjkf) = (/ 30 /)
@@ -108,10 +105,10 @@ contains
 			zavs(i) = de_zfromintpl(ravs(i))
 		enddo
 		if(printinfo) then
-			write(*,'(A,<nbin>(e14.7,1x))') '(muaver_jackknife) muavs = ', muavs(1:nbin)
-			write(*,'(19x,A,<nbin>(e14.7,1x))') 'muers = ', muers(1:nbin)
-			write(*,'(19x,A,<nbin>(e14.7,1x))') 'ravs  = ', ravs(1:nbin)
-			write(*,'(19x,A,<nbin>(e14.7,1x))') 'rers  = ', rers(1:nbin)
+			write(*,*) '(muaver_jackknife) muavs = ', muavs(1:nbin)
+			write(*,*) 'muers = ', muers(1:nbin)
+			write(*,*) 'ravs  = ', ravs(1:nbin)
+			write(*,*) 'rers  = ', rers(1:nbin)
 		endif
 	end subroutine muaver_jackknife
 		
@@ -132,7 +129,7 @@ contains
 		real(dl) :: rmin,rmax
 		integer :: i,j,k,i_split,nownbin, idrop, n1,n2, num_bins, num, num_points
 		real(dl), allocatable :: & !gb_pos_list(:,:), gb_rho_list(:), gb_drho_list(:,:), 
-			drho_mu_data(:), drho_absdrho_data(:), drho_absrho_data(:), drho_mu_data_orig(:), &
+			drho_mu_data(:), drho_mu_data_orig(:), &
 			pos_list(:,:), rho_list(:), drho_list(:,:),  absdrholist(:), reflist(:)
 		integer, allocatable :: markdrop(:)
 		logical :: print_time = .false.
@@ -159,8 +156,12 @@ contains
 			write(*,'(A)') '   (gd_mldprho_chi2s) Estimating chisq: method = \"grid\" '
 			write(*,'(A,f9.4,A,i3)') '   (gd_mldprho_chi2s) changenuminx = ', real(changenuminx), &
 				'; # of drop = ', cs%numdrop
-			write(*,'(22x,A,i2,A,<nbinchisq>(i2,1x))') 'gradient field bin-#  (', nbinchisq, ' options): ', nbinchisqlist
-			write(*,'(22x,A,i2,A,<gb_numjkf>(i2,1x))') '    jackknife  bin-#  (', gb_numjkf, ' options): ', gb_jkf_njkfs
+			write(*,'(22x,A,i2,A)') 'gradient field bin-#  (', nbinchisq, ' options): '
+			write(*,'(22x,$)') 
+			write(*,*) nbinchisqlist
+			write(*,'(22x,A,i2,A)') '    jackknife  bin-#  (', gb_numjkf, ' options): '
+			write(*,'(22x,$)') 
+			write(*,*)  gb_jkf_njkfs
 		endif
 
 		muinfo_access = gb_muinfo_access
@@ -241,13 +242,9 @@ contains
 			chisqlist(idrop) = chisq_of_mu_data2(drho_mu_data_orig) / chisq_div_frac
 			! abs mu, drho
 			if(allocated(drho_mu_data)) deallocate(drho_mu_data)
-			if(allocated(drho_absdrho_data)) deallocate(drho_absdrho_data)
-			if(allocated(drho_absrho_data)) deallocate(drho_absrho_data)
-			allocate(drho_mu_data(num_points), drho_absdrho_data(num_points), drho_absrho_data(num_points))
+			allocate(drho_mu_data(num_points))
 			do i = 1, num_points
 				drho_mu_data(i) = abs(drho_mu_data_orig(i))
-				drho_absdrho_data(i) = sqrt(drho_list(1,i)**2.0+drho_list(2,i)**2.0+drho_list(3,i)**2.0)
-				drho_absrho_data(i) = abs(rho_list(i))
 				if(rho_list(i)<0.0) then
 					print *, 'WARNING (gd_mldprho_chi2s)!!! Encountered negative rho: ', i, rho_list(i)
 				endif
@@ -310,10 +307,14 @@ contains
 					! mu calculated from jackknife
 					call muaver_jackknife(pos_list, drho_list, num_points, gb_jkf_njkfs(i), nownbin, &
 							ravlist_test, zlist_test, muavlist_test, muerlist_test, .false.)
-					write(900,'(<nownbin>(e14.7,1x),A)') zlist_test(1:nownbin), ' # redshift'
-					write(900,'(<nownbin>(e14.7,1x),A)') ravlist_test(1:nownbin), ' #  r'
-					write(900,'(<nownbin>(e14.7,1x),A)') muavlist_test(1:nownbin), ' # \bar mu'
-					write(900,'(<nownbin>(e14.7,1x),A)') muerlist_test(1:nownbin), ' # er of \bar mu'
+					write(900,'(A,A)') &
+					 trim(adjustl(WriteFmtEfloat(nownbin,zlist_test(1:nownbin)))), ' # redshift'
+					write(900,'(A,A)') &
+					 trim(adjustl(WriteFmtEfloat(nownbin,ravlist_test(1:nownbin)))), ' # r'
+					write(900,'(A,A)') &
+					 trim(adjustl(WriteFmtEfloat(nownbin,muavlist_test(1:nownbin)))), ' # \bar mu'
+					write(900,'(A,A)') &
+					 trim(adjustl(WriteFmtEfloat(nownbin,muerlist_test(1:nownbin)))), ' # er of \bar mu'
 					deallocate(muavlist_test, muerlist_test,zlist_test, ravlist_test, muvarlist_test)
 				    enddo
 				    close(900)
@@ -332,11 +333,15 @@ contains
 					do k = 1, nownbin
 						zlist_test(k) = de_zfromintpl(ravlist_test(k))
 					enddo
-					write(898,'(<nownbin>(e14.7,1x),A)') zlist_test(1:nownbin), ' # redshift'
-					write(898,'(<nownbin>(e14.7,1x),A)') ravlist_test(1:nownbin), ' #  r'
-					write(898,'(<nownbin>(e14.7,1x),A)') muavlist_test(1:nownbin), ' # \bar mu'
-					write(898,'(<nownbin>(e14.7,1x),A)') muerlist_test(1:nownbin) * sqrt(chisq_div_frac), &
-						' # er of \bar mu'
+					write(898,'(A,A)') &
+					 trim(adjustl(WriteFmtEfloat(nownbin,zlist_test(1:nownbin)))), ' # redshift'
+					write(898,'(A,A)') &
+					 trim(adjustl(WriteFmtEfloat(nownbin,ravlist_test(1:nownbin)))), ' # r'
+					write(898,'(A,A)') &
+					 trim(adjustl(WriteFmtEfloat(nownbin,muavlist_test(1:nownbin)))), ' # \bar mu'
+					write(898,'(A,A)') &
+					 trim(adjustl(WriteFmtEfloat(nownbin,&
+					  muerlist_test(1:nownbin)* sqrt(chisq_div_frac)))), ' # er of \bar mu'
 
 					! "most original" mu (without taking tha absolute)
 					call eqvl_binned_quan(drho_mu_data_orig, r_list, rmin, rmax, size(drho_mu_data), &
@@ -344,86 +349,22 @@ contains
 					do k = 1, nownbin
 						zlist_test(k) = de_zfromintpl(ravlist_test(k))
 					enddo
-					write(899,'(<nownbin>(e14.7,1x),A)') zlist_test(1:nownbin), ' # redshift'
-					write(899,'(<nownbin>(e14.7,1x),A)') ravlist_test(1:nownbin), ' #  r'
-					write(899,'(<nownbin>(e14.7,1x),A)') muavlist_test(1:nownbin), ' # \bar mu'
-					write(899,'(<nownbin>(e14.7,1x),A)') muerlist_test(1:nownbin) * sqrt(chisq_div_frac), &
-						' # er of \bar mu'
+					write(899,'(A,A)') &
+					 trim(adjustl(WriteFmtEfloat(nownbin,zlist_test(1:nownbin)))), ' # redshift'
+					write(899,'(A,A)') &
+					 trim(adjustl(WriteFmtEfloat(nownbin,ravlist_test(1:nownbin)))), ' # r'
+					write(899,'(A,A)') &
+					 trim(adjustl(WriteFmtEfloat(nownbin,muavlist_test(1:nownbin)))), ' # \bar mu'
+					write(899,'(A,A)') &
+					 trim(adjustl(WriteFmtEfloat(nownbin,&
+					  muerlist_test(1:nownbin)* sqrt(chisq_div_frac)))), ' # er of \bar mu'
 					deallocate(muavlist_test, muerlist_test,zlist_test, ravlist_test, muvarlist_test)
 				enddo
 				close(898); close(899);
 			endif
 
-			!############################
-			! chisq from redshift dependent abs(drho)...
-			if(gb_calc_absdrho_chisq) then
-				! output info of absdrho!!! NEW!
-				if(gb_outputinfo_absdrho) then ! only output absdrho for idrop 1
-	                          write(str,*) idrop
-	                          
-                                  absdrhofile1 = trim(adjustl(gb_suboutput_name))//'_absdrhoinfo_idrop'//trim(adjustl(str))//'.txt'
-                                  absdrhofile2 = trim(adjustl(gb_suboutput_name))//'_absrhoinfo_idrop'//trim(adjustl(str))//'.txt'
-                                  absdrhofile3 = trim(adjustl(gb_suboutput_name))//'_absdrhotorhoinfo_idrop'//trim(adjustl(str))//'.txt'
-				  open(unit=898,file=absdrhofile1,access=muinfo_access)
-				  open(unit=899,file=absdrhofile2,access=muinfo_access)
-				  open(unit=900,file=absdrhofile3,access=muinfo_access)
-				  if(cs%print_info.and.idrop.eq.1) then
-				  	write(*,'(A)') '  output info of absdrho: '//trim(adjustl(absdrhofile1))
-		                  endif
-				  write(898,'(2i4,2(e14.7,1x),A)') gb_iom, gb_iw, gb_omegam, gb_w, ' # i_om, i_w, omegam, w'
-				  write(899,'(2i4,2(e14.7,1x),A)') gb_iom, gb_iw, gb_omegam, gb_w, ' # i_om, i_w, omegam, w'
-				  write(900,'(2i4,2(e14.7,1x),A)') gb_iom, gb_iw, gb_omegam, gb_w, ' # i_om, i_w, omegam, w'
-				  do i_split = 1, nbinchisq
-					nownbin = nbinchisqlist(i_split)
-					write(898,*) nownbin, ' # num-of-bin'
-					write(899,*) nownbin, ' # num-of-bin'
-					write(900,*) nownbin, ' # num-of-bin'
-					allocate(zlist_test(nownbin),ravlist_test(nownbin), &
-						absdrhoavlist_test(nownbin), absdrhoerlist_test(nownbin),absdrhovarlist_test(nownbin),&
-						absrhoavlist_test(nownbin), absrhoerlist_test(nownbin),absrhovarlist_test(nownbin))
-					! absdrho usually used to do chisq calculating 
-					call eqvl_binned_quan(drho_absdrho_data, r_list, rmin, rmax, num_points, &
-						nownbin, absdrhoavlist_test, absdrhoerlist_test, ravlist_test, absdrhovarlist_test)
-					call eqvl_binned_quan(drho_absrho_data, r_list, rmin, rmax, num_points, &
-						nownbin, absrhoavlist_test, absrhoerlist_test, ravlist_test, absrhovarlist_test)
-					do k = 1, nownbin
-						zlist_test(k) = de_zfromintpl(ravlist_test(k))
-					enddo
-					
-					write(898,'(<nownbin>(e14.7,1x),A)') zlist_test(1:nownbin), ' # redshift'
-					write(898,'(<nownbin>(e14.7,1x),A)') ravlist_test(1:nownbin), ' #  r'
-					write(898,'(<nownbin>(e14.7,1x),A)') absdrhoavlist_test(1:nownbin), ' # \bar absdrho'
-					write(898,'(<nownbin>(e14.7,1x),A)') absdrhoerlist_test(1:nownbin) * sqrt(chisq_div_frac), &
-							' # er of \bar absdrho'
-
-					write(899,'(<nownbin>(e14.7,1x),A)') zlist_test(1:nownbin), ' # redshift'
-					write(899,'(<nownbin>(e14.7,1x),A)') ravlist_test(1:nownbin), ' #  r'
-					write(899,'(<nownbin>(e14.7,1x),A)') absrhoavlist_test(1:nownbin), ' # \bar absrho'
-					write(899,'(<nownbin>(e14.7,1x),A)') absrhoerlist_test(1:nownbin) * sqrt(chisq_div_frac), &
-							' # er of \bar rho'
-
-					do k = 1, nownbin
-						absdrhoavlist_test(k) = absdrhoavlist_test(k)/absrhoavlist_test(k)
-						absdrhoerlist_test(k) = absdrhoavlist_test(k)/absrhoavlist_test(k) * sqrt( &
-							(absdrhoerlist_test(k)/absdrhoavlist_test(k))**2.0 + &
-							(absrhoerlist_test(k)/absrhoavlist_test(k))**2.0)
-					enddo
-
-					write(900,'(<nownbin>(e14.7,1x),A)') zlist_test(1:nownbin), ' # redshift'
-					write(900,'(<nownbin>(e14.7,1x),A)') ravlist_test(1:nownbin), ' #  r'
-					write(900,'(<nownbin>(e14.7,1x),A)') absdrhoavlist_test(1:nownbin), ' # \bar absdrho / rho'
-					write(900,'(<nownbin>(e14.7,1x),A)') absdrhoerlist_test(1:nownbin) * sqrt(chisq_div_frac), &
-							' # er of \bar absdrho / \bar rho'
-
-					deallocate(absdrhoavlist_test, absdrhoerlist_test, absdrhovarlist_test, &
-							absrhoavlist_test, absrhoerlist_test, absrhovarlist_test, &
-							zlist_test,ravlist_test ) ! for tests
-				  enddo
-				  close(898); close(890); close(900);
-				endif			
-			endif
 200			continue
-			deallocate(r_list,pos_list,rho_list,drho_list,drho_mu_data,drho_absdrho_data,drho_absrho_data,drho_mu_data_orig)
+			deallocate(r_list,pos_list,rho_list,drho_list,drho_mu_data,drho_mu_data_orig)
 		enddo
 		deallocate(absdrholist,markdrop,reflist)
 		deallocate(muavlist,muerlist,ravlist,muvarlist)
