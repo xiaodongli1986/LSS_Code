@@ -80,6 +80,8 @@ use LSS_BSK
 			write(tmpstr1,'(f30.3)') maximalrcut
 			outputfilename = trim(adjustl(outputfilename))//'_rmax'//trim(adjustl(tmpstr1))
 		endif
+		write(tmpstr1, *) numNNB; outputfilename = trim(adjustl(outputfilename))//'_numNNB'//trim(adjustl(tmpstr1));
+		write(tmpstr1, '(f9.4)') beta; outputfilename = trim(adjustl(outputfilename))//'_beta'//trim(adjustl(tmpstr1));
 	endif
 
 	print *, '#####################################'
