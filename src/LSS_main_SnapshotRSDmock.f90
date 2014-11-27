@@ -15,7 +15,16 @@ implicit none
 		outputfilenameinfo, tmpstr1,tmpstr2, suffix
 	logical :: shiftx,shifty,shiftz, dovoleff
 	
-	printstr = 'Usage: EXE -input intpufilename -xyzmin xyzmin -xyzmax xyzmax -xcol xcol -ycol ycol -zcol zcol -vxcol vxcol -vycol vycol -vzcol vzcol -redshift redshift -omegam omegam -w w -shiftx shiftx -shifty shifty -shiftz shiftz -skiprow skiprow -suffix suffix -dovoleff dovoleff ### xyzmin/xyzmax used to do periodical boundary condition (shift inside to box if shifted outside by RSD); please tell cosmology of the simulation, redshift of the snapshot; please choose which direction to shift (x,y,z; three possibilities) ### dovoleff only respect to Om=0.26/w=-1.0 cosmology!!!'
+	printstr = 'Usage: EXE -input intpufilename -xyzmin xyzmin '//&
+		'-xyzmax xyzmax -xcol xcol -ycol ycol -zcol zcol '//&
+		'-vxcol vxcol -vycol vycol -vzcol vzcol -redshift redshift '//&
+		'-omegam omegam -w w -shiftx shiftx -shifty shifty -shiftz shiftz '//&
+		'-skiprow skiprow -suffix suffix -dovoleff dovoleff '//&
+		'### xyzmin/xyzmax used to do periodical boundary '//&
+		'condition (shift inside to box if shifted outside by RSD); '//&
+		'please tell cosmology of the simulation, redshift of the snapshot; '//&
+		'please choose which direction to shift (x,y,z; three possibilities) '//&
+		'### dovoleff only respect to Om=0.26/w=-1.0 cosmology!!!'
 
 	! Default values
 	xyzmin = -1.0e30; xyzmax = 1.0e30;

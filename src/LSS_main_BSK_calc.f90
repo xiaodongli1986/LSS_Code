@@ -2,7 +2,7 @@
 
 program LSS_main
 
-use mpi
+!use mpi
 use LSS_BSK
 
 	character(len=char_len) :: inputfilename, outputfilename, tmpstr1, tmpstr2, &
@@ -12,9 +12,9 @@ use LSS_BSK
 	integer :: numNNB = 100, numarg, nproc, ierr, myid, i, numdrop=1
 
 	! Initialize MPI
-	call mpi_init(ierr)
-	call mpi_comm_size(mpi_comm_world,nproc,ierr)
-	call mpi_comm_rank(mpi_comm_world,myid,ierr)
+	!call mpi_init(ierr)
+	!call mpi_comm_size(mpi_comm_world,nproc,ierr)
+	!call mpi_comm_rank(mpi_comm_world,myid,ierr)
 
 	! datatype: -1 means x,y,z (see LSS_settings_init.f90)
 	gb_i_datatype = gb_dt_xyz
@@ -28,7 +28,11 @@ use LSS_BSK
 	numarg = iargc()
 	if(numarg .le. 0) then
 		print *, 'small numarg: ', numarg
-		write(*,'(A)'), ' Usage: ./BSK_calc -om omegam -w w -input intpufilename -output outputfilname -beta beta -printinfo printinfo -numNNB numNNB -minimalrcut minimalrcut -maximalrcut maximalrcut -nglcrosscheck do_nglcrosscheck -ngldir ngldir -numdrop numdrop -dropstep dropstep'
+		write(*,'(A)') ' Usage: ./BSK_calc -om omegam -w w '//&
+			'-input intpufilename -output outputfilname -beta beta '//&
+			'-printinfo printinfo -numNNB numNNB -minimalrcut minimalrcut '//&
+			'-maximalrcut maximalrcut -nglcrosscheck do_nglcrosscheck '//&
+			'-ngldir ngldir -numdrop numdrop -dropstep dropstep'
 		stop
 	endif
 	
@@ -65,7 +69,11 @@ use LSS_BSK
 			read(tmpstr2,*) dropstep
 		else
 			print *, 'Unkown argument: ', trim(adjustl(tmpstr1))
-			write(*,'(A)'), ' Usage: ./BSK_calc -om omegam -w w -input intpufilename -output outputfilname -beta beta -printinfo printinfo -numNNB numNNB -minimalrcut minimalr_cut -maximalrcut maximalr_cut -nglcrosscheck do_nglcrosscheck -ngldir ngldir -numdrop numdrop -dropstep dropstep'
+			write(*,'(A)') ' Usage: ./BSK_calc -om omegam -w w '//&
+			 '-input intpufilename -output outputfilname -beta beta '//&
+			 '-printinfo printinfo -numNNB numNNB -minimalrcut minimalrcut '//&
+			 '-maximalrcut maximalrcut -nglcrosscheck do_nglcrosscheck '//&
+			 '-ngldir ngldir -numdrop numdrop -dropstep dropstep'
 			stop
 		endif
 	enddo
@@ -101,6 +109,6 @@ use LSS_BSK
 
 	call BSK_stat(omegam, w, beta, outputfilename, numdrop, dropstep, printinfo)
 
-	call mpi_barrier(mpi_comm_world,ierr)
-	call mpi_finalize(ierr)
+	!call mpi_barrier(mpi_comm_world,ierr)
+	!call mpi_finalize(ierr)
 end program LSS_main

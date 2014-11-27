@@ -57,7 +57,8 @@ implicit none
       if(i.lt.2) then
               print *, 'Usage:             EXE datafile numrbin edge1 edge2 ... '
               print *, 'fmt of datafile:   x,y,z,***'
-              print *, 'Example: ./Rbinned-Split-Data   haharandom10  2  0.0 0.500 1.000 T T ## 2bins; fist 0-0.5; second 0.5-1; do output for both first and second '
+              print *, 'Example: ./Rbinned-Split-Data   haharandom10  '//&
+		'2  0.0 0.500 1.000 T T ## 2bins; fist 0-0.5; second 0.5-1; do output for both first and second '
               stop
       endif
       
@@ -77,7 +78,8 @@ implicit none
               print *, 'ERROR: wrong number of iarg: ', i, 2+numrbin+1
               print *, 'Usage:             ./split_data datafile numrbin edge1 edge2 ... '
               print *, 'fmt of datafile:   x,y,z,***'
-	      print *, 'Example: ./Rbinned-Split-Data   haharandom10  2  0.0 0.500 1.000 T T ## 2bins; fist 0-0.5; second 0.5-1; do output for both first and second '
+	      print *, 'Example: ./Rbinned-Split-Data   haharandom10  '//&
+			'2  0.0 0.500 1.000 T T ## 2bins; fist 0-0.5; second 0.5-1; do output for both first and second '
               stop
       endif
 

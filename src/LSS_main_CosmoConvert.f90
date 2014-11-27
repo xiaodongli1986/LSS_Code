@@ -13,7 +13,10 @@ implicit none
 	integer(8) :: numarg, nlines
 	character(len=char_len) :: suffix, inputfilename, outputfilename, outputinfo, tmpstr1,tmpstr2, printstr
 	
-	printstr = 'Usage: EXE -input intpufilename -omin -omin -win -win -omout -omout -wout -wout -xcol xcol -ycol ycol -zcol zcol -hasweight hasweight -wcol wcol -skiprow skiprow -suffix suffix  ### fmt of output: x, y, z, weight ### Converting the input file into a different cosmology'
+	printstr = 'Usage: EXE -input intpufilename -omin -omin -win -win '//&
+		'-omout -omout -wout -wout -xcol xcol -ycol ycol -zcol zcol '//&
+		'-hasweight hasweight -wcol wcol -skiprow skiprow -suffix suffix  '//&
+		'### fmt of output: x, y, z, weight ### Converting the input file into a different cosmology'
 
 	! Default values
 	omin = 0.26; win = -1.0; 

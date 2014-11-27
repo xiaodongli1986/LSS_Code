@@ -14,7 +14,12 @@ implicit none
 	logical :: hasweight, printinfo
 	type(chisq_settings) :: cs
 	
-	printstr = 'Usage: EXE -input intpufilename -hasweight hasweight -bddist bddist -omdft omdft -wdft wdft -omAP omAP -wAP wAP -printinfo printinfo -usefixmd usefixmd -smnum smnum -fixmd fixmd -numinx numinx ### Must be fmt of x,y,z, weight! By default only x,y,z ## Keep a distance bddist from boundary, to avoid boundary effect'
+	printstr = 'Usage: EXE -input intpufilename -hasweight hasweight '//&
+		'-bddist bddist -omdft omdft -wdft wdft -omAP omAP -wAP wAP '//&
+		'-printinfo printinfo -usefixmd usefixmd -smnum smnum '//&
+		'-fixmd fixmd -numinx numinx '//&
+		'### Must be fmt of x,y,z, weight! By default only x,y,z '//&
+		'## Keep a distance bddist from boundary, to avoid boundary effect'
 
 	numarg = iargc()
 	if(numarg.le.1) then

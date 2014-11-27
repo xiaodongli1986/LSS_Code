@@ -11,7 +11,12 @@ implicit none
 	integer(8) :: numarg, nlines
 	character(len=char_len) :: printstr, suffix, inputfilename, outputfilename, outputfilenameinfo, tmpstr1,tmpstr2
 	
-	printstr = 'Usage: EXE -input intpufilename -omegam omegam -w w -xcol xcol -ycol ycol -zcol zcol -vxcol vxcol -vycol vycol -vzcol vzcol -masscol masscol -skiprow skiprow -suffix suffix  ### fmt of output: x, y, z, vx, vy, vz, mass, redshift, redobs = redshift + vlos * (1.0+redshift) / const_c, rat = robs / r  ### Generating "compact" sample, matching the format of creat-mock'
+	printstr = 'Usage: EXE -input intpufilename -omegam omegam -w w '//&
+		'-xcol xcol -ycol ycol -zcol zcol -vxcol vxcol -vycol vycol '//&
+		'-vzcol vzcol -masscol masscol -skiprow skiprow -suffix suffix  '//&
+		'### fmt of output: x, y, z, vx, vy, vz, mass, redshift, redobs = '//&
+		'redshift + vlos * (1.0+redshift) / const_c, rat = robs / r  '//&
+		'### Generating "compact" sample, matching the format of creat-mock'
 
 	! Default values
 	omegam = 0.26; w = -1.0; 

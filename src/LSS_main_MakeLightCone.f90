@@ -12,21 +12,35 @@ implicit none
 	real(dl) :: x,y,z,r, xyzmin,xyzmax, omegam,w, tmp(1000),constantmasscut, dxyz,maxdist, nowdiff,mindiff
 	real(dl), allocatable :: obs_pos(:,:), slicereds(:), slicedists(:), masscuts(:), masscutreds(:), &
 		tmpinfos(:,:), tmpdists(:), tmpxyzs(:,:)
-	integer :: numobs, numslice, nummasscut, numskiplowmass, numshift, xcol,ycol,zcol,vxcol,vycol,vzcol,masscol,skiprow,maxcol,numarg, &
+	integer :: numobs, numslice, nummasscut, numskiplowmass, numshift, &
+		xcol,ycol,zcol,vxcol,vycol,vzcol,masscol,skiprow,maxcol,numarg, &
 		i,j,ndat, ishiftx,ishifty,ishiftz,islice, numLCdat
 	integer, allocatable :: outputfileunits(:)
-	character(len=char_len) :: inputfilename, outputfilename, outputfilenameinfo, sliceinfofile, obsinfofile, evolvmasscutfile, &
-		suffix, tmpstr1, tmpstr2, printstr1,printstr2,printstr3,printstr4,printstr5,printstr6,printstr7,printstr8
+	character(len=char_len) :: inputfilename, outputfilename, outputfilenameinfo, &
+		sliceinfofile, obsinfofile, evolvmasscutfile, &
+		suffix, tmpstr1, tmpstr2, printstr1,printstr2,printstr3,&
+		printstr4,printstr5,printstr6,printstr7,printstr8
 	character(len=char_len), allocatable :: outputfiles(:)
 	logical :: doevolvmasscut, rsdshiftinclu, endoffile, withinLC
 !	const_Mpctokm
-	printstr1 = 'Usage: EXE -input inputfilename -omegam omegam -w w -xyzmin xyzmin -xyzmax xyzmax -maxdist maxdist -xcol xcol -ycol ycol -zcol zcol -vxcol vxcol -vycol vycol -vzcol vzcol -masscol masscol -skiprow skiprow -suffix suffix -sliceinfo sliceinfofile -obsinfo obsinfofile -constantmasscut constantmasscut -doevolvmasscut doevolvmasscut  -evolvmasscut evolvmasscutfile -rsdshiftinclu rsdshiftinclu -numshift numshift'
+	printstr1 = 'Usage: EXE -input inputfilename -omegam omegam '//&
+		'-w w -xyzmin xyzmin -xyzmax xyzmax -maxdist maxdist '//&
+		'-xcol xcol -ycol ycol -zcol zcol -vxcol vxcol -vycol vycol '//&
+		'-vzcol vzcol -masscol masscol -skiprow skiprow -suffix suffix '//&
+		'-sliceinfo sliceinfofile -obsinfo obsinfofile '//&
+		'-constantmasscut constantmasscut -doevolvmasscut doevolvmasscut  '//&
+		'-evolvmasscut evolvmasscutfile -rsdshiftinclu rsdshiftinclu -numshift numshift'
 	printstr2 = '### # sliceinfo is information of slice; fmt: redshift'
-	printstr3 = '# obsinfo is information of observer; fmt: xloc,yloc,zloc (in percentage, e.g. 0.5 0.5 0.5 means an observer at the center)'
+	printstr3 = '# obsinfo is information of observer; fmt: xloc,yloc,zloc '//&
+		'(in percentage, e.g. 0.5 0.5 0.5 means an observer at the center)'
 	printstr4 = '# maxdist is the maximal distance that the LC reaches. ' 
-	printstr5 = '# A positive mass cut will be applied to avoid zero mass halo (so far doevolvmasscut not supported...)'
-	printstr6 = '# numshift: shift the periodical box to reduplicate the data. if numshift = 1, will making (2*1+1)^3 = 9 copies'
-	printstr7 = '### Example: ./MakeLightCone -input testdats/HR4LC/SubSample00.dat -xyzmin 0.0 -xyzmax 3150.0 -obsinfo HR4LC/obsinfo.txt -sliceinfo HR4LC/sliceinfo.txt -omegam 0.26 -w -1.0 -maxdist 1800.0 -numshift 1'
+	printstr5 = '# A positive mass cut will be applied to avoid zero mass halo '//&
+		'(so far doevolvmasscut not supported...)'
+	printstr6 = '# numshift: shift the periodical box to reduplicate the data. '//&
+		'if numshift = 1, will making (2*1+1)^3 = 9 copies'
+	printstr7 = '### Example: ./MakeLightCone -input testdats/HR4LC/SubSample00.dat '//&
+		'-xyzmin 0.0 -xyzmax 3150.0 -obsinfo HR4LC/obsinfo.txt -sliceinfo '//&
+		'HR4LC/sliceinfo.txt -omegam 0.26 -w -1.0 -maxdist 1800.0 -numshift 1'
 ! E.g.  obspos.txt: 
 !	 0.00 0.00 0.00
 !	 0.00 0.00 0.50

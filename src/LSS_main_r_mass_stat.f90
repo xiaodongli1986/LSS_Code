@@ -14,7 +14,14 @@ implicit none
 	logical :: logmass, dodegrade
 	character(len=char_len) :: inputfilename, outputfilename, outputfilename1, outputfilename2, printstr, tmpstr1,tmpstr2
 	
-	printstr = 'Usage: EXE -input intpufilename -rmin rmin -rmax rmax -massmin massmin -massmax massmax -logmass logmass -numrbin numrbin -nummassbin nummassbin -xcol xcol -ycol ycol -zcol zcol -masscol masscol -dodegrade dodegrade -numdegrade numdegrade ### dodegrade will choose a suitable masscut and degrade the data to a subsample with number numdegrade'
+	print *
+	printstr = "Usage: EXE -input intpufilename -rmin rmin "//&
+		'-rmax rmax -massmin massmin -massmax massmax '//&
+		'-logmass logmass -numrbin numrbin -nummassbin nummassbin '//&
+		'-xcol xcol -ycol ycol -zcol zcol -masscol masscol '//&
+		'-dodegrade dodegrade -numdegrade numdegrade '//&
+		'### dodegrade will choose a suitable masscut and '//&
+		'degrade the data to a subsample with number numdegrade'
 
 	! Default values
 	rmin = 0.0; rmax = 100000.0d0; 

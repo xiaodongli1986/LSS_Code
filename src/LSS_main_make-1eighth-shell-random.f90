@@ -1,12 +1,11 @@
 
 program main 
 
-use mpi
 use LSS_cosmo_funs
 
 	implicit none
 	! HR3 file, data
-        integer :: i, iran, nran, ranseed
+        integer :: i, iran, nran, ranseed, puts(12)
         real(dl) :: rmin, rmax, r,x,y,z
         character(len=char_len) :: randatafile, tmpstr
 
@@ -29,9 +28,13 @@ use LSS_cosmo_funs
         call getarg(5,tmpstr)
         read(tmpstr,*) rmax
         
-        write(*,'(i9,A,f10.2,A,f10.2,A,A)') nran, ' randoms in 1/8 shell, r ', rmin, ' to', rmax, ', file: ', trim(adjustl(randatafile))
+        write(*,'(i9,A,f10.2,A,f10.2,A,A)') nran, ' randoms in 1/8 shell, r ', rmin, &
+		' to', rmax, ', file: ', trim(adjustl(randatafile))
         
-        call random_seed(put=(/0,ranseed/))
+	puts = 0
+	puts(1) = 0
+	puts(2) = ranseed
+        call random_seed(put=puts)
 
         iran = 0
         
