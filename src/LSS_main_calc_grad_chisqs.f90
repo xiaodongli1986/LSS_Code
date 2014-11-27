@@ -43,7 +43,8 @@
 
 program LSS_main
 
-use mpi
+
+
 use LSS_chisq
 
 	implicit none
@@ -69,9 +70,10 @@ use LSS_chisq
 	integer, allocatable :: iomlist(:), iwlist(:)
 
 	! mpi variables
-	integer :: ierr, nproc, myid!, i1,i2,  mpistatus(MPI_STATUS_SIZE)
-	
-	! others
+
+	integer :: ierr, nproc=1, myid=0!, i1,i2,  mpistatus(MPI_STATUS_SIZE)
+
+
 	real(dl) :: time1, time2, tmpx1,tmpx2,tmpx3, tmpx4,tmpx5,tmpx6, ra,dec!,r
 	
 	! for beta-skeleton test
@@ -79,10 +81,6 @@ use LSS_chisq
 	logical :: Connected, erflaglog
 
 	! Initialize MPI
-	call mpi_init(ierr)
-	call mpi_comm_size(mpi_comm_world,nproc,ierr)
-	call mpi_comm_rank(mpi_comm_world,myid,ierr)
-
 	!open(unit=1000,file='gb_outputnames.txt',access='append')
 	! usual wcp
 	!gb_wcpw = gb_wcpw_usual
@@ -672,6 +670,5 @@ use LSS_chisq
      enddo
      enddo
      	close(1000)
-	call mpi_barrier(mpi_comm_world,ierr)
-	call mpi_finalize(ierr)
+
 end program LSS_main
