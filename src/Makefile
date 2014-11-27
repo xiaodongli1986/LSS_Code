@@ -12,7 +12,7 @@ EXE10 = ../bin/LSS_Make-1eighth-Shell-Random
 EXE11 = ../bin/LSS_Rbinned-Split-Data
 EXE12 = ../bin/LSS_mpi_sh
 OBJS = LSS_tools.o  LSS_mu_tools.o LSS_cosmo_funs.o LSS_settings_init.o LSS_cell.o LSS_smooth.o LSS_grad_fields.o LSS_chisq.o LSS_BSK.o
-F90C = mpif90 -heap-arrays
+F90C = gfortran #mpif90 -heap-arrays
 #F90C = /home/xiaodongli/software/anaconda/bin/mpif90
 F90FLAGS = 
 
