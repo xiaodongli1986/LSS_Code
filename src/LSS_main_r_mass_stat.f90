@@ -164,11 +164,12 @@ implicit none
 		';  numoutrange = ', numoutrange, '; numbigmass = ', numbigmass
 	open(unit=2,file=outputfilename)
 	print *, 'Result: rmin, rmax, massmin, massmax, num'
-	write(2,'(A,3("(",2f15.7,"); "), A,2f15.7,A,2e15.7,A,i10,A,i10)') &
+	write(2,'(A,3("(",2f15.7,"); "), A,2f15.7,A,2e15.7,A,i12,A,i12,A,i12)') &
 		'#Result: rmin, rmax, massmin, massmax, num. p.s. range of x,y,z: ',&
 		xmin,xmax,ymin,ymax,zmin,zmax, 'min/max of r:', real(rmin2),real(rmax2), &
 		';  min/max of mass:', real(massmin2),real(massmax2), &
-		';  numoutrange = ', numoutrange, '; numbigmass = ', numbigmass
+		';  numoutrange = ', numoutrange, '; numbigmass = ', numbigmass, &
+		';  total num = ', nlines
 	do i = 1, numrbin
 		do j = 1, nummassbin
 			write(*,'(2f15.7,2e15.7, i10)') redges(i), redges(i+1), massedges(j), massedges(j+1), binnednum(i,j)

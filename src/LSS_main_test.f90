@@ -2,7 +2,6 @@ module test_funs
 
 use LSS_tools
 implicit none
-contains
 
 
 end module test_funs
