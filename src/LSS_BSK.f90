@@ -329,6 +329,7 @@ contains
 			gb_drho_list(1,i) = (gb_xyz_list(1,i1)-gb_xyz_list(1,i2))*0.5
 			gb_drho_list(2,i) = (gb_xyz_list(2,i1)-gb_xyz_list(2,i2))*0.5
 			gb_drho_list(3,i) = (gb_xyz_list(3,i1)-gb_xyz_list(3,i2))*0.5
+			gb_rho_list(i) = rms(gb_drho_list(1:3,i),3)
 		enddo
 		
 		! outputname
